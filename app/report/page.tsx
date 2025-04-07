@@ -68,13 +68,14 @@ const [isLoading, setIsLoading] = useState<boolean>(true);
         </h1> */}
 
 {isLoading ? (
-  <div className="flex justify-center items-center py-10">
+  <div className="flex flex-col justify-center items-center py-10 mb-10">
     <motion.div
       className="w-10 h-10 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
       initial={{ rotate: 0 }}
       animate={{ rotate: 360 }}
       transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}
     />
+    <p className="text-md font-medium animate-pulse m-6">กำลังโหลดคำศัพท์...</p>
   </div>
 ) : words.length === 0 ? (
           <p className="text-gray-500">ยังไม่มีคำศัพท์ที่บันทึกไว้</p>
