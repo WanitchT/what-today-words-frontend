@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from 'next/link';
 
 const API_BASE = "https://what-today-words-backend-production.up.railway.app"; // ⛳ Replace with your deployed backend URL
 
@@ -126,12 +127,10 @@ export default function Home() {
                   </motion.p>
                 )}
               </AnimatePresence>
-              <a
-                href="/report"
-                className="inline-block text-emerald-500 hover:underline mt-4"
-              >
-                📄 View Report
-              </a>
+              
+              <Link href="/report" className="text-emerald-500 hover:underline">
+  📄 View Report
+</Link>
             </div>
           )}
         </div>

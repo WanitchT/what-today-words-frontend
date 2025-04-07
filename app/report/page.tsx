@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 const API_BASE = 'https://what-today-words-backend-production.up.railway.app'; // 🌐 Replace with your backend URL
 
@@ -44,12 +45,9 @@ export default function ReportPage() {
         <h1 className="text-2xl font-bold mb-4 text-emerald-600">
           📝 Word Report for {babyName}
         </h1>
-        <a
-          href="/"
-          className="inline-block mb-6 text-emerald-500 hover:underline"
-        >
-          ← Back to home
-        </a>
+        <Link href="/" className="text-emerald-500 hover:underline">
+  ← Back to home
+</Link>
 
         {words.length === 0 ? (
           <p className="text-gray-500">No words recorded yet.</p>
