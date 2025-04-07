@@ -43,14 +43,14 @@ export default function ReportPage() {
     <main className="min-h-screen bg-mint-100 text-gray-800 p-6 font-sans">
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6">
         <h1 className="text-2xl font-bold mb-4 text-emerald-600">
-          📝 Word Report for {babyName}
+          📝 คำศัพท์ทั้งหมดที่ {babyName} พูดได้
         </h1>
-        <Link href="/" className="text-emerald-500 hover:underline">
-  ← Back to home
+        <Link href="/" className="text-gray-500 text-center hover:underline inline-block px-4 py-2 rounded-xl bg-gray-100 mb-4">
+  ←     กลับไปที่หน้าแรก
 </Link>
 
         {words.length === 0 ? (
-          <p className="text-gray-500">No words recorded yet.</p>
+          <p className="text-gray-500">ยังไม่มีคำศัพท์ที่บันทึกไว้</p>
         ) : (
           <ul className="space-y-4">
             {words.map((word) => (

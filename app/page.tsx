@@ -84,8 +84,8 @@ export default function Home() {
             alt="Baby"
             className="w-16 h-16 rounded-full object-cover border-2 border-emerald-300 shadow"
           />
-          <h1 className="text-2xl font-bold text-emerald-600 font-mitr">
-            👶 วันนี้ {babyName || '...'} พูดอะไร?
+          <h1 className="text-3xl font-bold text-emerald-600 font-mitr">
+            วันนี้ {babyName || '...'} พูดอะไร?
           </h1>
         </div>
 
@@ -122,8 +122,8 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
-            <p>Add a new word your baby said today:</p>
+          <div className="space-y-4 flex flex-col">
+            <p>เพิ่มคำศัพท์ใหม่ๆที่ลูกพูดได้:</p>
             <input
               value={word}
               onChange={(e) => setWord(e.target.value)}
@@ -140,7 +140,7 @@ export default function Home() {
               onClick={handleWordSubmit}
               className="bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
             >
-              Add Word
+              เพิ่มคำศัพท์
             </button>
             <AnimatePresence>
               {submitted && (
@@ -156,8 +156,8 @@ export default function Home() {
                 </motion.p>
               )}
             </AnimatePresence>
-            <Link href="/report" className="text-emerald-500 hover:underline inline-block">
-              📄 View Report
+            <Link href="/report" className="text-gray-500 text-center hover:underline inline-block px-4 py-2 rounded-xl bg-gray-100">
+              📄 ดูคำศัพท์ทั้งหมด
             </Link>
           </div>
         )}
