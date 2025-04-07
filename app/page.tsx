@@ -84,7 +84,7 @@ export default function Home() {
 
         {!babyId ? (
           <div className="space-y-4">
-            <p className="text-gray-600">Enter your baby's name to create a new record:</p>
+            <p className="text-gray-600">Enter your baby name to create a new record:</p>
             <input
               value={babyName}
               onChange={(e) => setBabyName(e.target.value)}
