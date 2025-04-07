@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const API_BASE = 'https://what-today-words-backend-production.up.railway.app'; // 🌐 Replace with your backend URL
 
@@ -46,31 +47,37 @@ export default function ReportPage() {
           📝 คำศัพท์ทั้งหมดที่ {babyName} พูดได้
         </h1>
         <Link href="/" className="text-gray-500 text-center hover:underline inline-block px-4 py-2 rounded-xl bg-gray-100 mb-4">
-  ←     กลับไปที่หน้าแรก
-</Link>
+          ←     กลับไปที่หน้าแรก
+        </Link>
 
         {words.length === 0 ? (
           <p className="text-gray-500">ยังไม่มีคำศัพท์ที่บันทึกไว้</p>
         ) : (
-          <ul className="space-y-4">
-            {words.map((word) => (
-              <li
-                key={word.id}
-                className="flex justify-between items-center bg-emerald-50 p-4 rounded-xl shadow-sm hover:shadow-md transition"
-              >
-                <div>
-                  <p className="font-medium text-lg text-emerald-800">{word.word}</p>
-                  <p className="text-sm text-gray-500">{word.date}</p>
-                </div>
-                <button
-                  onClick={() => handleDelete(word.id)}
-                  className="text-sm text-red-600 hover:text-red-800 font-semibold"
+          <AnimatePresence>
+            <ul className="space-y-4">
+              {words.map((word) => (
+                <motion.li
+                  key={word.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex justify-between items-center bg-emerald-50 p-4 rounded-xl shadow-sm hover:shadow-md transition"
                 >
-                  ✖ Delete
-                </button>
-              </li>
-            ))}
-          </ul>
+                  <div>
+                    <p className="font-medium text-lg text-emerald-800">{word.word}</p>
+                    <p className="text-sm text-gray-500">{word.date}</p>
+                  </div>
+                  <button
+                    onClick={() => handleDelete(word.id)}
+                    className="text-sm text-red-600 hover:text-red-800 font-semibold"
+                  >
+                    ✖ Delete
+                  </button>
+                </motion.li>
+              ))}
+            </ul>
+          </AnimatePresence>
         )}
       </div>
     </main>

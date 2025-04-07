@@ -70,6 +70,14 @@ export default function Home() {
     setBabyName(data.name);
   };
 
+
+  const handleClearData = () => {
+    localStorage.removeItem('babyId');
+    localStorage.removeItem('babyName');
+    setBabyId(null);
+    setBabyName('');
+  };
+
   return (
     <main className="min-h-screen bg-emerald-50 p-6 font-anuphan text-gray-800">
       <motion.div
@@ -91,7 +99,7 @@ export default function Home() {
 
         {!babyId ? (
           <div className="space-y-4">
-            <p className="text-gray-600">Enter your baby name to create a new record:</p>
+            {/* <p className="text-gray-600">สร้างรายชื่อลูกคนใหม่:</p>
             <input
               value={babyName}
               onChange={(e) => setBabyName(e.target.value)}
@@ -103,22 +111,22 @@ export default function Home() {
               className="bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
             >
               Create New Baby
-            </button>
+            </button> */}
 
             <hr className="my-4" />
 
-            <p className="text-gray-600">Or enter an existing baby ID to continue:</p>
+            <p className="text-gray-600">ป้อน ID ของลูก (ภัท ID: 1):</p>
             <input
               type="number"
               onChange={(e) => setManualId(Number(e.target.value))}
-              placeholder="Enter Baby ID"
+              placeholder="ID ของลูก"
               className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
             />
             <button
               onClick={handleUseExistingId}
               className="bg-gray-200 text-gray-700 px-4 py-2 rounded-xl hover:bg-gray-300 transition"
             >
-              Use Existing Baby ID
+              ใช้ ID เดิมของลูก
             </button>
           </div>
         ) : (
@@ -157,9 +165,18 @@ export default function Home() {
               )}
             </AnimatePresence>
             <Link href="/report" className="text-gray-500 text-center hover:underline inline-block px-4 py-2 rounded-xl bg-gray-100">
-              📄 ดูคำศัพท์ทั้งหมด
+              ดูคำศัพท์ทั้งหมด
             </Link>
+            
+            <button
+  onClick={handleClearData}
+  className="mt-2 text-sm text-gray-500 hover:underline bg-red-100 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
+>
+  Log Out
+</button>
           </div>
+
+          
         )}
       </motion.div>
     </main>
