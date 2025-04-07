@@ -56,11 +56,18 @@ export default function Home() {
     setTimeout(() => setSubmitted(false), 2000);
   };
 
-  const handleUseExistingId = () => {
-    if (manualId) {
-      setBabyId(manualId);
-      setBabyName('(From ID)');
+  const handleUseExistingId = async () => {
+    if (!manualId) return;
+  
+    const res = await fetch(`${API_BASE}/api/baby/${manualId}`);
+    if (!res.ok) {
+      alert('Baby ID not found!');
+      return;
     }
+  
+    const data = await res.json();
+    setBabyId(data.id);
+    setBabyName(data.name);
   };
 
   return (
