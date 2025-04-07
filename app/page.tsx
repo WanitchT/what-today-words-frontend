@@ -33,15 +33,15 @@ export default function Home() {
     }
   }, [babyId, babyName]);
 
-  const handleNameSubmit = async () => {
-    const res = await fetch(`${API_BASE}/api/baby`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: babyName }),
-    });
-    const data = await res.json();
-    setBabyId(data.id);
-  };
+  // const handleNameSubmit = async () => {
+  //   const res = await fetch(`${API_BASE}/api/baby`, {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ name: babyName }),
+  //   });
+  //   const data = await res.json();
+  //   setBabyId(data.id);
+  // };
 
   const handleWordSubmit = async () => {
     if (!word || !date || !babyId) return;
