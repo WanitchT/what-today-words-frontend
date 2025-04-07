@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: 'What Today Words',
+  title: 'วันนี้ลูกพูดอะไร',
   description: 'Track your baby’s first words!',
 };
 
