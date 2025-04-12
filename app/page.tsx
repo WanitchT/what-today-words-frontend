@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app"; // ⛳ Replace with your deployed backend URL
+const API_BASE = "https://what-today-words-backend-production.up.railway.app"; // 🌐 Replace with your backend URL
+// const API_BASE = "http://localhost:4000"; // 🌐 Replace with your backend URL
 
 export default function Home() {
   const [babyName, setBabyName] = useState<string>("");
@@ -13,6 +14,8 @@ export default function Home() {
   const [date, setDate] = useState<string>(getToday());
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [manualId, setManualId] = useState<number | null>(null);
+
+  const [category, setCategory] = useState<string>('');
 
   const babyPhotoUrl =
     "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
@@ -46,14 +49,16 @@ export default function Home() {
   const handleWordSubmit = async () => {
     if (!word || !date || !babyId) return;
     await fetch(`${API_BASE}/api/words`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ word, date, babyId }),
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ word, date, babyId, category }),
     });
     setWord("");
     setDate(getToday());
     setSubmitted(true);
+    setCategory('');
     setTimeout(() => setSubmitted(false), 2000);
+    
   };
 
   const handleUseExistingId = async () => {
@@ -132,6 +137,20 @@ export default function Home() {
               onChange={(e) => setDate(e.target.value)}
               className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
             />
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+            >
+              <option value="">🗂️ เลือกประเภทคำ</option>
+              <option value="family">👨‍👩‍👧 ครอบครัว</option>
+              <option value="animal">🐶 สัตว์</option>
+              <option value="food">🍎 อาหาร</option>
+              <option value="object">📦 สิ่งของ</option>
+              <option value="emotion">😊 อารมณ์</option>
+              <option value="action">🏃 การกระทำ</option>
+              <option value="other">🔍 อื่น ๆ</option>
+            </select>
             <button
               onClick={handleWordSubmit}
               className="bg-teal-400 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
