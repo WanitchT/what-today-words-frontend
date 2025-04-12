@@ -11,6 +11,7 @@ type WordEntry = {
   id: number;
   word: string;
   date: string;
+  category?: string;
 };
 
 export default function ReportPage() {
