@@ -6,7 +6,7 @@ import Link from "next/link";
 // import { useRouter } from 'next/navigation';
 
 const API_BASE = "https://what-today-words-backend-production.up.railway.app";
-const defaultAvatarUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
+const defaultAvatarUrl = '/images/baby-42-128.png';
 
 type Baby = {
   id: number;
