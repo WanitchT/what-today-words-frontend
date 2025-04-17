@@ -14,7 +14,7 @@ export default function Home() {
   const [date, setDate] = useState<string>(getToday());
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [manualId, setManualId] = useState<number | null>(null);
-  const [category, setCategory] = useState<string>('');
+  const [category, setCategory] = useState<string>("");
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isBooting, setIsBooting] = useState(true);
@@ -27,14 +27,25 @@ export default function Home() {
       if (user?.id) setUserId(user.id);
     });
   }, []);
-  
+
   useEffect(() => {
     const fetchUserAndBaby = async () => {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
         if (user) {
           setUserEmail(user.email ?? null);
           setUserId(user.id ?? null);
+
+          const storedId = localStorage.getItem("babyId");
+          const storedName = localStorage.getItem("babyName");
+
+          if (storedId && storedName) {
+            setBabyId(Number(storedId));
+            setBabyName(storedName);
+            return; // ✅ skip re-setting if already selected
+          }
 
           const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
           const babies = await res.json();
@@ -67,21 +78,23 @@ export default function Home() {
     if (!word || !date || !babyId || !userId) return;
 
     await fetch(`${API_BASE}/api/words`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ word, date, babyId, category, userId }),
     });
 
     setWord("");
     setDate(getToday());
     setSubmitted(true);
-    setCategory('');
+    setCategory("");
     setTimeout(() => setSubmitted(false), 2000);
   };
 
   const handleUseExistingId = async () => {
     if (!manualId || !userId) return;
-    const res = await fetch(`${API_BASE}/api/baby/${manualId}?userId=${userId}`);
+    const res = await fetch(
+      `${API_BASE}/api/baby/${manualId}?userId=${userId}`
+    );
     if (!res.ok) {
       alert("Baby ID not found or unauthorized!");
       return;
@@ -94,8 +107,8 @@ export default function Home() {
   const handleCreateBaby = async () => {
     if (!babyName || !userId) return;
     const res = await fetch(`${API_BASE}/api/baby`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name: babyName, userId }),
     });
     const data = await res.json();
@@ -115,7 +128,7 @@ export default function Home() {
   };
 
   const handleLogin = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
+    await supabase.auth.signInWithOAuth({ provider: "google" });
   };
 
   if (isBooting || isLoggingOut) {
@@ -162,7 +175,9 @@ export default function Home() {
           </div>
         ) : !babyId ? (
           <div className="space-y-4">
-            <p className="text-gray-600">เริ่มต้นด้วยการตั้งชื่อลูกหรือนำเข้า ID เดิม</p>
+            <p className="text-gray-600">
+              เริ่มต้นด้วยการตั้งชื่อลูกหรือนำเข้า ID เดิม
+            </p>
             <input
               value={babyName}
               onChange={(e) => setBabyName(e.target.value)}
