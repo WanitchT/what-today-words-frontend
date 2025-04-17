@@ -71,7 +71,7 @@ export default function Home() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word, date, babyId, category, userId }),
     });
-    
+
     setWord("");
     setDate(getToday());
     setSubmitted(true);
@@ -255,6 +255,12 @@ export default function Home() {
               className="text-gray-800 text-center hover:underline inline-block px-4 py-2  bg-orange-300 rounded-xl shadow-xl"
             >
               ดูคำศัพท์ทั้งหมด
+            </Link>
+            <Link
+              href="/babies"
+              className="text-center text-sm text-emerald-600 hover:underline"
+            >
+              🧒 Switch Baby Profile
             </Link>
             <button
               onClick={handleClearData}
