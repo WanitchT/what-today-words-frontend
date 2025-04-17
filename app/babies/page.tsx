@@ -6,10 +6,12 @@ import Link from 'next/link';
 // import { useRouter } from 'next/navigation';
 
 const API_BASE = 'https://what-today-words-backend-production.up.railway.app';
+const defaultAvatarUrl = 'https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg';
 
 type Baby = {
   id: number;
   name: string;
+  photoUrl?: string;
 };
 
 export default function BabyDashboard() {
@@ -17,6 +19,7 @@ export default function BabyDashboard() {
   const [userId, setUserId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [newBabyName, setNewBabyName] = useState('');
+  const [newPhotoUrl, setNewPhotoUrl] = useState('');
   const [adding, setAdding] = useState(false);
 //   const router = useRouter();
 
@@ -33,9 +36,9 @@ export default function BabyDashboard() {
   }, []);
 
   const handleSelect = (baby: Baby) => {
-    // Update localStorage first
     localStorage.setItem('babyId', baby.id.toString());
     localStorage.setItem('babyName', baby.name);
+    if (baby.photoUrl) localStorage.setItem('babyPhoto', baby.photoUrl);
   
     // Force a short delay to let storage sync, then hard reload
     setTimeout(() => {
@@ -49,13 +52,14 @@ export default function BabyDashboard() {
     const res = await fetch(`${API_BASE}/api/baby`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: newBabyName.trim(), userId }),
+      body: JSON.stringify({ name: newBabyName.trim(), userId, photoUrl: newPhotoUrl || null }),
     });
 
     const data = await res.json();
     if (res.ok) {
-      setBabies((prev) => [...prev, { id: data.id, name: newBabyName.trim() }]);
+      setBabies((prev) => [...prev, { id: data.id, name: newBabyName.trim(), photoUrl: newPhotoUrl }]);
       setNewBabyName('');
+      setNewPhotoUrl('');
       setAdding(false);
     }
   };
@@ -74,9 +78,16 @@ export default function BabyDashboard() {
             {babies.map((baby) => (
               <li
                 key={baby.id}
-                className="flex justify-between items-center border p-3 rounded-xl hover:bg-emerald-50 transition"
+                className="flex justify-between items-center border p-3 rounded-xl hover:bg-emerald-100 transition"
               >
-                <span className="text-lg font-medium">{baby.name}</span>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={baby.photoUrl || defaultAvatarUrl}
+                    alt={baby.name}
+                    className="w-10 h-10 rounded-full object-cover border-2 border-emerald-200"
+                  />
+                  <span className="text-lg font-semibold text-gray-800">{baby.name}</span>
+                </div>
                 <button
                   onClick={() => handleSelect(baby)}
                   className="text-sm text-white bg-emerald-500 px-4 py-1 rounded-xl hover:bg-emerald-600"
@@ -104,6 +115,12 @@ export default function BabyDashboard() {
                 placeholder="New baby name"
                 className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
               />
+              <input
+                value={newPhotoUrl}
+                onChange={(e) => setNewPhotoUrl(e.target.value)}
+                placeholder="Photo URL (optional)"
+                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+              />
               <div className="flex gap-2">
                 <button
                   onClick={handleAddBaby}
@@ -115,6 +132,7 @@ export default function BabyDashboard() {
                   onClick={() => {
                     setAdding(false);
                     setNewBabyName('');
+                    setNewPhotoUrl('');
                   }}
                   className="text-sm text-gray-600 hover:underline"
                 >
