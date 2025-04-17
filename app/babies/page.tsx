@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import supabase from '@/lib/supabaseClient';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 const API_BASE = 'https://what-today-words-backend-production.up.railway.app';
 
@@ -18,7 +18,7 @@ export default function BabyDashboard() {
   const [loading, setLoading] = useState(true);
   const [newBabyName, setNewBabyName] = useState('');
   const [adding, setAdding] = useState(false);
-  const router = useRouter();
+//   const router = useRouter();
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -35,7 +35,7 @@ export default function BabyDashboard() {
   const handleSelect = (baby: Baby) => {
     localStorage.setItem('babyId', baby.id.toString());
     localStorage.setItem('babyName', baby.name);
-    router.push('/');
+    window.location.href = '/';
   };
 
   const handleAddBaby = async () => {
