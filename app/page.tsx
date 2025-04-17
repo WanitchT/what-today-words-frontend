@@ -65,11 +65,13 @@ export default function Home() {
 
   const handleWordSubmit = async () => {
     if (!word || !date || !babyId || !userId) return;
-    await fetch(`${API_BASE}/api/words?userId=${userId}`, {
+
+    await fetch(`${API_BASE}/api/words`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ word, date, babyId, category }),
+      body: JSON.stringify({ word, date, babyId, category, userId }),
     });
+    
     setWord("");
     setDate(getToday());
     setSubmitted(true);
