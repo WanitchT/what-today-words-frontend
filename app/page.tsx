@@ -25,23 +25,28 @@ export default function Home() {
 
     useEffect(() => {
       const fetchUserAndBaby = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setUserEmail(user.email ?? null);
-          setUserId(user.id ?? null);
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
     
-          // 🆕 Check for baby
-          const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
-          const babies = await res.json();
+          if (user) {
+            setUserEmail(user.email ?? null);
+            setUserId(user.id ?? null);
     
-          if (Array.isArray(babies) && babies.length > 0) {
-            setBabyId(babies[0].id);
-            setBabyName(babies[0].name);
-            localStorage.setItem("babyId", babies[0].id.toString());
-            localStorage.setItem("babyName", babies[0].name);
+            const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
+            const babies = await res.json();
+    
+            if (Array.isArray(babies) && babies.length > 0) {
+              setBabyId(babies[0].id);
+              setBabyName(babies[0].name);
+              localStorage.setItem("babyId", babies[0].id.toString());
+              localStorage.setItem("babyName", babies[0].name);
+            }
           }
+        } catch (err) {
+          console.error("Error booting app:", err);
+        } finally {
+          setIsBooting(false); // ✅ Always stop loading
         }
-        setIsBooting(false); // ✅ done booting
       };
     
       fetchUserAndBaby();
