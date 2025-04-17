@@ -49,7 +49,8 @@ export default function ReportPage() {
     fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
-        setWords(data);
+        console.log("Fetched words:", data); // 👈 ADD THIS
+        setWords(Array.isArray(data) ? data : []);
         setIsLoading(false);
       });
   }, [babyId, userId]);
