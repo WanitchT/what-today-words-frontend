@@ -23,6 +23,10 @@ export default function BabyDashboard() {
   const [adding, setAdding] = useState(false);
 //   const router = useRouter();
 
+const [editingId, setEditingId] = useState<number | null>(null);
+const [editedName, setEditedName] = useState('');
+const [editedPhotoUrl, setEditedPhotoUrl] = useState('');
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.id) {
@@ -71,6 +75,23 @@ export default function BabyDashboard() {
     }
   };
 
+  const handleEditSave = async (babyId: number) => {
+    const res = await fetch(`${API_BASE}/api/baby/${babyId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: editedName, photoUrl: editedPhotoUrl }),
+    });
+  
+    if (res.ok) {
+      setBabies((prev) =>
+        prev.map((b) =>
+          b.id === babyId ? { ...b, name: editedName, photoUrl: editedPhotoUrl } : b
+        )
+      );
+      setEditingId(null);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-emerald-50 p-6">
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 space-y-4">
@@ -84,24 +105,71 @@ export default function BabyDashboard() {
           <ul className="space-y-2">
             {babies.map((baby) => (
               <li
-                key={baby.id}
-                className="flex justify-between items-center border p-3 rounded-xl hover:bg-emerald-100 transition"
-              >
-                <div className="flex items-center gap-3">
-                  <img
-                    src={baby.photoUrl || defaultAvatarUrl}
-                    alt={baby.name}
-                    className="w-10 h-10 rounded-full object-cover border-2 border-emerald-200"
-                  />
-                  <span className="text-lg font-semibold text-gray-800">{baby.name}</span>
+              key={baby.id}
+              className="flex flex-col gap-2 border p-3 rounded-xl hover:bg-emerald-100 transition"
+            >
+              {editingId === baby.id ? (
+                <>
+                  <div className="flex gap-2 items-center">
+                    <input
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)}
+                      className="w-1/2 px-2 py-1 border rounded"
+                      placeholder="Name"
+                    />
+                    <input
+                      value={editedPhotoUrl}
+                      onChange={(e) => setEditedPhotoUrl(e.target.value)}
+                      className="w-1/2 px-2 py-1 border rounded"
+                      placeholder="Photo URL"
+                    />
+                  </div>
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      onClick={() => handleEditSave(baby.id)}
+                      className="text-sm text-white bg-emerald-500 px-3 py-1 rounded-xl hover:bg-emerald-600"
+                    >
+                      Save
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="text-sm text-gray-600 hover:underline"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={baby.photoUrl || defaultAvatarUrl}
+                      alt={baby.name}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-emerald-200"
+                    />
+                    <span className="text-lg font-semibold text-gray-800">{baby.name}</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleSelect(baby)}
+                      className="text-sm text-white bg-emerald-500 px-3 py-1 rounded-xl hover:bg-emerald-600"
+                    >
+                      Select
+                    </button>
+                    <button
+                      onClick={() => {
+                        setEditingId(baby.id);
+                        setEditedName(baby.name);
+                        setEditedPhotoUrl(baby.photoUrl ?? '');
+                      }}
+                      className="text-sm text-gray-600 hover:underline"
+                    >
+                      Edit
+                    </button>
+                  </div>
                 </div>
-                <button
-                  onClick={() => handleSelect(baby)}
-                  className="text-sm text-white bg-emerald-500 px-4 py-1 rounded-xl hover:bg-emerald-600"
-                >
-                  Select
-                </button>
-              </li>
+              )}
+            </li>
             ))}
           </ul>
         )}
