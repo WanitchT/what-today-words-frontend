@@ -23,6 +23,12 @@ export default function Home() {
   const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user?.id) setUserId(user.id);
+    });
+  }, []);
+  
+  useEffect(() => {
     const fetchUserAndBaby = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser();
