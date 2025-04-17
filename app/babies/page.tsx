@@ -29,7 +29,14 @@ export default function BabyDashboard() {
         setUserId(user.id);
         fetch(`${API_BASE}/api/babies?userId=${user.id}`)
           .then((res) => res.json())
-          .then(setBabies)
+          .then((data: { id: number; name: string; photo_url?: string }[]) => {
+            const normalized: Baby[] = data.map((b) => ({
+              id: b.id,
+              name: b.name,
+              photoUrl: b.photo_url ?? undefined,
+            }));
+            setBabies(normalized); // ✅ babies are typed as Baby[]
+          })
           .finally(() => setLoading(false));
       }
     });
