@@ -19,8 +19,9 @@ export default function Home() {
   const [userId, setUserId] = useState<string | null>(null);
   const [isBooting, setIsBooting] = useState(true);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [babyPhotoUrl, setBabyPhotoUrl] = useState<string>("https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg");
 
-  const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
+  // const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -40,11 +41,13 @@ export default function Home() {
 
           const storedId = localStorage.getItem("babyId");
           const storedName = localStorage.getItem("babyName");
+          const storedPhoto = localStorage.getItem("babyPhoto");
 
           if (storedId && storedName) {
             setBabyId(Number(storedId));
             setBabyName(storedName);
-            return; // ✅ skip re-setting if already selected
+            if (storedPhoto) setBabyPhotoUrl(storedPhoto);
+            return;
           }
 
           const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
@@ -55,6 +58,10 @@ export default function Home() {
             setBabyName(babies[0].name);
             localStorage.setItem("babyId", babies[0].id.toString());
             localStorage.setItem("babyName", babies[0].name);
+            if (babies[0].photo_url) {
+              setBabyPhotoUrl(babies[0].photo_url);
+              localStorage.setItem("babyPhoto", babies[0].photo_url);
+            }
           }
         }
       } catch (err) {
