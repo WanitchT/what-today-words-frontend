@@ -18,6 +18,7 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isBooting, setIsBooting] = useState(true);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
@@ -94,20 +95,22 @@ export default function Home() {
   };
 
   const handleClearData = async () => {
+    setIsLoggingOut(true);
     localStorage.removeItem("babyId");
     localStorage.removeItem("babyName");
+    await supabase.auth.signOut();
     setBabyId(null);
     setBabyName("");
-    await supabase.auth.signOut();
     setUserEmail(null);
     setUserId(null);
+    setIsLoggingOut(false);
   };
 
   const handleLogin = async () => {
     await supabase.auth.signInWithOAuth({ provider: 'google' });
   };
 
-  if (isBooting) {
+  if (isBooting || isLoggingOut) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-emerald-50 text-gray-800">
         <motion.div
