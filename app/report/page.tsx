@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import supabase from "@/lib/supabaseClient";
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app"; // 🌐 Replace with your backend URL
-// const API_BASE = "http://localhost:4000"; // 🌐 Replace with your backend URL
+const API_BASE = "https://what-today-words-backend-production.up.railway.app";
 
 type WordEntry = {
   id: number;
@@ -18,19 +18,17 @@ export default function ReportPage() {
   const [words, setWords] = useState<WordEntry[]>([]);
   const [babyId, setBabyId] = useState<number | null>(null);
   const [babyName, setBabyName] = useState<string>("");
+  const [userId, setUserId] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
-
   const [filter, setFilter] = useState<string>('all');
-
   const [savedId, setSavedId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [newCategory, setNewCategory] = useState<string>('');
 
   const filteredWords = words.filter((w) =>
     filter === 'all' ? true : w.category === filter
   );
-
-  const [editingId, setEditingId] = useState<number | null>(null);
-  const [newCategory, setNewCategory] = useState<string>('');
 
   useEffect(() => {
     const storedId = localStorage.getItem("babyId");
@@ -39,24 +37,44 @@ export default function ReportPage() {
       setBabyId(Number(storedId));
       setBabyName(storedName);
     }
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user?.id) setUserId(user.id);
+    });
   }, []);
 
   useEffect(() => {
-    if (!babyId) return;
+    if (!babyId || !userId) return;
     setIsLoading(true);
-    fetch(`${API_BASE}/api/words/${babyId}`)
+    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}`)
       .then((res) => res.json())
       .then((data) => {
         setWords(data);
         setIsLoading(false);
       });
-  }, [babyId]);
+  }, [babyId, userId]);
 
   const handleDelete = async (id: number) => {
     await fetch(`${API_BASE}/api/words/${id}`, {
       method: "DELETE",
     });
     setWords((prev) => prev.filter((w) => w.id !== id));
+  };
+
+  const handleCategoryUpdate = async (id: number) => {
+    await fetch(`${API_BASE}/api/words/${id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category: newCategory })
+    });
+
+    setWords((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, category: newCategory } : w))
+    );
+    setEditingId(null);
+    setNewCategory('');
+    setSavedId(id);
+    setTimeout(() => setSavedId(null), 1500);
   };
 
   const categoryBadge = (category?: string, id?: number) => {
@@ -69,46 +87,30 @@ export default function ReportPage() {
       action: { label: 'การกระทำ', emoji: '🏃', color: 'bg-green-100 text-green-800' },
       other:  { label: 'อื่น ๆ', emoji: '🔍', color: 'bg-gray-200 text-gray-700' },
     };
-  
+
     const fallback = { label: category || '', emoji: '🏷️', color: 'bg-emerald-100 text-emerald-800' };
     const { emoji, label, color } = categoryMap[category || ''] || fallback;
-  
+
     return (
       <motion.span
-    layout
-    initial={{ scale: 0.9, opacity: 0 }}
-    animate={{ scale: 1, opacity: 1 }}
-    transition={{ duration: 0.3 }}
-    className={`inline-block text-xs px-2 py-1 rounded-full ml-2 ${color}`}
-  >
-    {emoji} {label}
-    {id !== undefined && (
-      <button
-        onClick={() => {
-          setEditingId(id);
-          setNewCategory(category || '');
-        }}
-        className="ml-1 text-gray-500 hover:text-gray-700 text-xs"
-      >✏️</button>
-    )}
-  </motion.span>
+        layout
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        className={`inline-block text-xs px-2 py-1 rounded-full ml-2 ${color}`}
+      >
+        {emoji} {label}
+        {id !== undefined && (
+          <button
+            onClick={() => {
+              setEditingId(id);
+              setNewCategory(category || '');
+            }}
+            className="ml-1 text-gray-500 hover:text-gray-700 text-xs"
+          >✏️</button>
+        )}
+      </motion.span>
     );
-  };
-
-  const handleCategoryUpdate = async (id: number) => {
-    await fetch(`${API_BASE}/api/words/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ category: newCategory })
-    });
-  
-    setWords((prev) =>
-      prev.map((w) => (w.id === id ? { ...w, category: newCategory } : w))
-    );
-    setEditingId(null);
-    setNewCategory('');
-    setSavedId(id);
-setTimeout(() => setSavedId(null), 1500);
   };
 
   return (
@@ -126,26 +128,22 @@ setTimeout(() => setSavedId(null), 1500);
       </div>
 
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6">
-        {/* <h1 className="text-2xl font-bold mb-4 text-emerald-600">
-          📝 คำศัพท์ทั้งหมดที่ {babyName} พูดได้
-        </h1> */}
-
-<div className="mb-4">
-  <select
-    value={filter}
-    onChange={(e) => setFilter(e.target.value)}
-    className="px-3 py-2 border rounded-xl text-sm"
-  >
-    <option value="all">🔍 All Categories</option>
-    <option value="family">👨‍👩‍👧 Family</option>
-    <option value="animal">🐶 Animal</option>
-    <option value="food">🍎 Food</option>
-    <option value="object">📦 Object</option>
-    <option value="emotion">😊 Emotion</option>
-    <option value="action">🏃 Action</option>
-    <option value="other">🔍 Other</option>
-  </select>
-</div>
+        <div className="mb-4">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="px-3 py-2 border rounded-xl text-sm"
+          >
+            <option value="all">🔍 All Categories</option>
+            <option value="family">👨‍👩‍👧 Family</option>
+            <option value="animal">🐶 Animal</option>
+            <option value="food">🍎 Food</option>
+            <option value="object">📦 Object</option>
+            <option value="emotion">😊 Emotion</option>
+            <option value="action">🏃 Action</option>
+            <option value="other">🔍 Other</option>
+          </select>
+        </div>
 
         {isLoading ? (
           <div className="flex flex-col justify-center items-center py-10 mb-10">
@@ -177,43 +175,42 @@ setTimeout(() => setSavedId(null), 1500);
                     <p className="font-medium text-lg text-emerald-800">
                       {word.word}
                       {editingId === word.id ? (
-  <>
-    <select
-      value={newCategory}
-      onChange={(e) => setNewCategory(e.target.value)}
-      className="ml-2 text-sm border rounded px-2 py-1"
-    >
-      <option value="">-- Select --</option>
-      <option value="family">👨‍👩‍👧 Family</option>
-      <option value="animal">🐶 Animal</option>
-      <option value="food">🍎 Food</option>
-      <option value="object">📦 Object</option>
-      <option value="emotion">😊 Emotion</option>
-      <option value="action">🏃 Action</option>
-      <option value="other">🔍 Other</option>
-    </select>
-    <button
-      onClick={() => handleCategoryUpdate(word.id)}
-      className="ml-2 text-sm text-blue-600 hover:underline"
-    >
-      Save
-    </button>
-  </>
-) : (
-  categoryBadge(word.category, word.id)
-)}
-
-{savedId === word.id && (
-  <motion.span
-    className="ml-2 text-green-600 text-xs"
-    initial={{ opacity: 0, y: -4 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -4 }}
-    transition={{ duration: 0.4 }}
-  >
-    ✅ Saved
-  </motion.span>
-)}
+                        <>
+                          <select
+                            value={newCategory}
+                            onChange={(e) => setNewCategory(e.target.value)}
+                            className="ml-2 text-sm border rounded px-2 py-1"
+                          >
+                            <option value="">-- Select --</option>
+                            <option value="family">👨‍👩‍👧 Family</option>
+                            <option value="animal">🐶 Animal</option>
+                            <option value="food">🍎 Food</option>
+                            <option value="object">📦 Object</option>
+                            <option value="emotion">😊 Emotion</option>
+                            <option value="action">🏃 Action</option>
+                            <option value="other">🔍 Other</option>
+                          </select>
+                          <button
+                            onClick={() => handleCategoryUpdate(word.id)}
+                            className="ml-2 text-sm text-blue-600 hover:underline"
+                          >
+                            Save
+                          </button>
+                        </>
+                      ) : (
+                        categoryBadge(word.category, word.id)
+                      )}
+                      {savedId === word.id && (
+                        <motion.span
+                          className="ml-2 text-green-600 text-xs"
+                          initial={{ opacity: 0, y: -4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.4 }}
+                        >
+                          ✅ Saved
+                        </motion.span>
+                      )}
                     </p>
                     <p className="text-sm text-gray-500">{word.date}</p>
                   </div>
