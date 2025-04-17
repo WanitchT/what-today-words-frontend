@@ -29,6 +29,8 @@ export default function BabyDashboard() {
 
   const [currentBabyId, setCurrentBabyId] = useState<number | null>(null);
 
+  const [photoPreviewUrl, setPhotoPreviewUrl] = useState<string>("");
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.id) {
@@ -229,10 +231,23 @@ export default function BabyDashboard() {
               />
               <input
                 value={newPhotoUrl}
-                onChange={(e) => setNewPhotoUrl(e.target.value)}
+                onChange={(e) => {
+                  setNewPhotoUrl(e.target.value);
+                  setPhotoPreviewUrl(e.target.value);
+                }}
                 placeholder="Photo URL (optional)"
                 className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
               />
+              {photoPreviewUrl && (
+                <div className="pt-2">
+                  <img
+                    src={photoPreviewUrl}
+                    alt="Preview"
+                    onError={(e) => (e.currentTarget.src = defaultAvatarUrl)}
+                    className="w-16 h-16 rounded-full object-cover border border-emerald-300 shadow-sm"
+                  />
+                </div>
+              )}
               <div className="flex gap-2">
                 <button
                   onClick={handleAddBaby}
