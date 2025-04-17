@@ -3,9 +3,9 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import supabase from "@/lib/supabaseClient";
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app"; // 🌐 Replace with your backend URL
-// const API_BASE = "http://localhost:4000"; // 🌐 Replace with your backend URL
+const API_BASE = "https://what-today-words-backend-production.up.railway.app";
 
 export default function Home() {
   const [babyName, setBabyName] = useState<string>("");
@@ -14,13 +14,21 @@ export default function Home() {
   const [date, setDate] = useState<string>(getToday());
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [manualId, setManualId] = useState<number | null>(null);
-
   const [category, setCategory] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
 
   const babyPhotoUrl =
     "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        setUserEmail(user.email);
+        setUserId(user.id);
+      }
+    });
+
     const storedId = localStorage.getItem("babyId");
     const storedName = localStorage.getItem("babyName");
     if (storedId && storedName) {
@@ -36,19 +44,9 @@ export default function Home() {
     }
   }, [babyId, babyName]);
 
-  // const handleNameSubmit = async () => {
-  //   const res = await fetch(`${API_BASE}/api/baby`, {
-  //     method: 'POST',
-  //     headers: { 'Content-Type': 'application/json' },
-  //     body: JSON.stringify({ name: babyName }),
-  //   });
-  //   const data = await res.json();
-  //   setBabyId(data.id);
-  // };
-
   const handleWordSubmit = async () => {
     if (!word || !date || !babyId) return;
-    await fetch(`${API_BASE}/api/words`, {
+    await fetch(`${API_BASE}/api/words?userId=${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word, date, babyId, category }),
@@ -58,15 +56,14 @@ export default function Home() {
     setSubmitted(true);
     setCategory('');
     setTimeout(() => setSubmitted(false), 2000);
-    
   };
 
   const handleUseExistingId = async () => {
-    if (!manualId) return;
+    if (!manualId || !userId) return;
 
-    const res = await fetch(`${API_BASE}/api/baby/${manualId}`);
+    const res = await fetch(`${API_BASE}/api/baby/${manualId}?userId=${userId}`);
     if (!res.ok) {
-      alert("Baby ID not found!");
+      alert("Baby ID not found or unauthorized!");
       return;
     }
 
@@ -75,11 +72,31 @@ export default function Home() {
     setBabyName(data.name);
   };
 
-  const handleClearData = () => {
+  const handleCreateBaby = async () => {
+    if (!babyName || !userId) return;
+
+    const res = await fetch(`${API_BASE}/api/baby`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: babyName, userId }),
+    });
+
+    const data = await res.json();
+    setBabyId(data.id);
+  };
+
+  const handleClearData = async () => {
     localStorage.removeItem("babyId");
     localStorage.removeItem("babyName");
     setBabyId(null);
     setBabyName("");
+    await supabase.auth.signOut();
+    setUserEmail(null);
+    setUserId(null);
+  };
+
+  const handleLogin = async () => {
+    await supabase.auth.signInWithOAuth({ provider: 'google' });
   };
 
   return (
@@ -102,13 +119,36 @@ export default function Home() {
         transition={{ duration: 0.6 }}
         className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6"
       >
-        {/* <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6"> */}
-
-        {!babyId ? (
+        {!userEmail ? (
+          <div className="text-center space-y-4">
+            <p className="text-gray-600">กรุณาเข้าสู่ระบบเพื่อเริ่มต้น</p>
+            <button
+              onClick={handleLogin}
+              className="bg-emerald-500 text-white px-6 py-2 rounded-xl hover:bg-emerald-600"
+            >
+              🔐 Sign in with Google
+            </button>
+          </div>
+        ) : !babyId ? (
           <div className="space-y-4">
-            {/* <hr className="my-4" /> */}
+            <p className="text-gray-600">เริ่มต้นด้วยการตั้งชื่อลูกหรือนำเข้า ID เดิม</p>
 
-            <p className="text-gray-600">ป้อน ID ของลูก (ภัท ID: 1):</p>
+            <input
+              value={babyName}
+              onChange={(e) => setBabyName(e.target.value)}
+              placeholder="ชื่อลูกของคุณ"
+              className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+            />
+            <button
+              onClick={handleCreateBaby}
+              className="bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600"
+            >
+              ➕ สร้างโปรไฟล์ลูกใหม่
+            </button>
+
+            <hr />
+
+            <p className="text-gray-600">หากมี Baby ID เดิม:</p>
             <input
               type="number"
               onChange={(e) => setManualId(Number(e.target.value))}
@@ -171,43 +211,32 @@ export default function Home() {
                 </motion.p>
               )}
             </AnimatePresence>
-
-            {/* <button
-              onClick={handleClearData}
-              className="mt-2 text-sm text-gray-500 hover:underline bg-red-100 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
-            >
-              Log Out
-            </button> */}
           </div>
         )}
       </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 18 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-      {!babyId ? (
-        <div className="flex justify-between flex-col max-w-xl mx-auto mt-6 space-y-2">
-        </div>
-        ) : (
-      <div className="flex justify-between flex-col max-w-xl mx-auto p-2 mt-6 space-y-2">
-        <Link
-          href="/report"
-          className="text-gray-800 text-center hover:underline inline-block px-4 py-2  bg-orange-300 rounded-xl shadow-xl"
+      {userEmail && babyId && (
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
         >
-          ดูคำศัพท์ทั้งหมด
-        </Link>
-        <button
-          onClick={handleClearData}
-          className="mt-8 text-sm text-gray-800 hover:underline bg-gray-300 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
-        >
-          Log Out
-        </button>
-      </div>
+          <div className="flex justify-between flex-col max-w-xl mx-auto p-2 mt-6 space-y-2">
+            <Link
+              href={`/report?userId=${userId}`}
+              className="text-gray-800 text-center hover:underline inline-block px-4 py-2  bg-orange-300 rounded-xl shadow-xl"
+            >
+              ดูคำศัพท์ทั้งหมด
+            </Link>
+            <button
+              onClick={handleClearData}
+              className="mt-8 text-sm text-gray-800 hover:underline bg-gray-300 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
+            >
+              Log Out
+            </button>
+          </div>
+        </motion.div>
       )}
-      </motion.div>
-
     </main>
   );
 }
