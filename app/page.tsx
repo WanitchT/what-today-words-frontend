@@ -21,21 +21,28 @@ export default function Home() {
   const babyPhotoUrl =
     "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUserEmail(user.email ?? null);
-        setUserId(user.id);
-      }
-    });
-
-    const storedId = localStorage.getItem("babyId");
-    const storedName = localStorage.getItem("babyName");
-    if (storedId && storedName) {
-      setBabyId(Number(storedId));
-      setBabyName(storedName);
-    }
-  }, []);
+    useEffect(() => {
+      const fetchUserAndBaby = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUserEmail(user.email ?? null);
+          setUserId(user.id ?? null);
+    
+          // 🆕 Check for baby
+          const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
+          const babies = await res.json();
+    
+          if (Array.isArray(babies) && babies.length > 0) {
+            setBabyId(babies[0].id);
+            setBabyName(babies[0].name);
+            localStorage.setItem("babyId", babies[0].id.toString());
+            localStorage.setItem("babyName", babies[0].name);
+          }
+        }
+      };
+    
+      fetchUserAndBaby();
+    }, []);
 
   useEffect(() => {
     if (babyId && babyName) {
