@@ -27,6 +27,8 @@ export default function BabyDashboard() {
   const [editedName, setEditedName] = useState("");
   const [editedPhotoUrl, setEditedPhotoUrl] = useState("");
 
+  const [currentBabyId, setCurrentBabyId] = useState<number | null>(null);
+
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user?.id) {
@@ -44,6 +46,13 @@ export default function BabyDashboard() {
           .finally(() => setLoading(false));
       }
     });
+  }, []);
+
+  useEffect(() => {
+    const storedId = localStorage.getItem('babyId');
+    if (storedId) {
+      setCurrentBabyId(Number(storedId));
+    }
   }, []);
 
   const handleSelect = (baby: Baby) => {
@@ -116,9 +125,11 @@ export default function BabyDashboard() {
           <ul className="space-y-2">
             {babies.map((baby) => (
               <li
-                key={baby.id}
-                className="flex flex-col gap-2 border p-3 rounded-xl hover:bg-emerald-100 transition"
-              >
+              key={baby.id}
+              className={`flex justify-between items-center border p-3 rounded-xl transition ${
+                currentBabyId === baby.id ? 'bg-emerald-100 border-emerald-400 shadow' : 'hover:bg-emerald-50'
+              }`}
+            >
                 {editingId === baby.id ? (
                   <>
                     <div className="space-y-2">
@@ -163,6 +174,9 @@ export default function BabyDashboard() {
                       <span className="text-lg font-semibold text-gray-800">
                         {baby.name}
                       </span>
+                      {currentBabyId === baby.id && (
+  <span className="ml-2 text-xs text-green-600 font-medium">✅ Current</span>
+)}
                     </div>
                     <div className="flex gap-2">
                       <button
