@@ -17,40 +17,37 @@ export default function Home() {
   const [category, setCategory] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-
   const [isBooting, setIsBooting] = useState(true);
 
-  const babyPhotoUrl =
-    "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
+  const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
-    useEffect(() => {
-      const fetchUserAndBaby = async () => {
-        try {
-          const { data: { user } } = await supabase.auth.getUser();
-    
-          if (user) {
-            setUserEmail(user.email ?? null);
-            setUserId(user.id ?? null);
-    
-            const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
-            const babies = await res.json();
-    
-            if (Array.isArray(babies) && babies.length > 0) {
-              setBabyId(babies[0].id);
-              setBabyName(babies[0].name);
-              localStorage.setItem("babyId", babies[0].id.toString());
-              localStorage.setItem("babyName", babies[0].name);
-            }
+  useEffect(() => {
+    const fetchUserAndBaby = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setUserEmail(user.email ?? null);
+          setUserId(user.id ?? null);
+
+          const res = await fetch(`${API_BASE}/api/babies?userId=${user.id}`);
+          const babies = await res.json();
+
+          if (Array.isArray(babies) && babies.length > 0) {
+            setBabyId(babies[0].id);
+            setBabyName(babies[0].name);
+            localStorage.setItem("babyId", babies[0].id.toString());
+            localStorage.setItem("babyName", babies[0].name);
           }
-        } catch (err) {
-          console.error("Error booting app:", err);
-        } finally {
-          setIsBooting(false); // ✅ Always stop loading
         }
-      };
-    
-      fetchUserAndBaby();
-    }, []);
+      } catch (err) {
+        console.error("Error booting app:", err);
+      } finally {
+        setIsBooting(false);
+      }
+    };
+
+    fetchUserAndBaby();
+  }, []);
 
   useEffect(() => {
     if (babyId && babyName) {
@@ -60,7 +57,7 @@ export default function Home() {
   }, [babyId, babyName]);
 
   const handleWordSubmit = async () => {
-    if (!word || !date || !babyId) return;
+    if (!word || !date || !babyId || !userId) return;
     await fetch(`${API_BASE}/api/words?userId=${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -75,13 +72,11 @@ export default function Home() {
 
   const handleUseExistingId = async () => {
     if (!manualId || !userId) return;
-
     const res = await fetch(`${API_BASE}/api/baby/${manualId}?userId=${userId}`);
     if (!res.ok) {
       alert("Baby ID not found or unauthorized!");
       return;
     }
-
     const data = await res.json();
     setBabyId(data.id);
     setBabyName(data.name);
@@ -89,13 +84,11 @@ export default function Home() {
 
   const handleCreateBaby = async () => {
     if (!babyName || !userId) return;
-
     const res = await fetch(`${API_BASE}/api/baby`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ name: babyName, userId }),
     });
-
     const data = await res.json();
     setBabyId(data.id);
   };
@@ -123,7 +116,12 @@ export default function Home() {
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
         />
+      </main>
+    );
+  }
 
+  return (
+    <main className="min-h-screen bg-emerald-50 p-6 font-anuphan text-gray-800">
       <div className="max-w-xl mx-auto flex items-center gap-4 m-6">
         <img
           src={babyPhotoUrl}
@@ -154,7 +152,6 @@ export default function Home() {
         ) : !babyId ? (
           <div className="space-y-4">
             <p className="text-gray-600">เริ่มต้นด้วยการตั้งชื่อลูกหรือนำเข้า ID เดิม</p>
-
             <input
               value={babyName}
               onChange={(e) => setBabyName(e.target.value)}
@@ -167,9 +164,7 @@ export default function Home() {
             >
               ➕ สร้างโปรไฟล์ลูกใหม่
             </button>
-
             <hr />
-
             <p className="text-gray-600">หากมี Baby ID เดิม:</p>
             <input
               type="number"
@@ -261,7 +256,6 @@ export default function Home() {
       )}
     </main>
   );
-}
 }
 
 function getToday(): string {
