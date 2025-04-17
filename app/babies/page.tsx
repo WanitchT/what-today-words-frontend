@@ -126,13 +126,13 @@ export default function BabyDashboard() {
                         <input
                           value={editedName}
                           onChange={(e) => setEditedName(e.target.value)}
-                          className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+                          className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300 text-gray-800"
                           placeholder="Name"
                         />
                         <input
                           value={editedPhotoUrl}
                           onChange={(e) => setEditedPhotoUrl(e.target.value)}
-                          className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+                          className="flex-1 px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300 text-gray-800"
                           placeholder="Photo URL"
                         />
                       </div>
