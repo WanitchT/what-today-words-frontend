@@ -24,7 +24,7 @@ export default function Home() {
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
       if (user) {
-        setUserEmail(user.email);
+        setUserEmail(user.email ?? null);
         setUserId(user.id);
       }
     });
