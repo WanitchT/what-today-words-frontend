@@ -56,9 +56,12 @@ export default function ReportPage() {
   }, [babyId, userId]);
 
   const handleDelete = async (id: number) => {
-    await fetch(`${API_BASE}/api/words/${id}`, {
+    if (!userId) return;
+  
+    await fetch(`${API_BASE}/api/words/${id}?userId=${userId}`, {
       method: "DELETE",
     });
+  
     setWords((prev) => prev.filter((w) => w.id !== id));
   };
 
