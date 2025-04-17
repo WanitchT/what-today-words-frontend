@@ -33,9 +33,14 @@ export default function BabyDashboard() {
   }, []);
 
   const handleSelect = (baby: Baby) => {
+    // Update localStorage first
     localStorage.setItem('babyId', baby.id.toString());
     localStorage.setItem('babyName', baby.name);
-    window.location.href = '/';
+  
+    // Force a short delay to let storage sync, then hard reload
+    setTimeout(() => {
+      window.location.href = '/';
+    }, 100); // ← give browser time to flush
   };
 
   const handleAddBaby = async () => {
