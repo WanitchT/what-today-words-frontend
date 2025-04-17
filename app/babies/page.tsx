@@ -49,7 +49,7 @@ export default function BabyDashboard() {
   }, []);
 
   useEffect(() => {
-    const storedId = localStorage.getItem('babyId');
+    const storedId = localStorage.getItem("babyId");
     if (storedId) {
       setCurrentBabyId(Number(storedId));
     }
@@ -124,12 +124,18 @@ export default function BabyDashboard() {
         ) : (
           <ul className="space-y-2">
             {babies.map((baby) => (
+              //   <li
+              //     key={baby.id}
+              //     className="flex flex-col gap-2 border p-3 rounded-xl hover:bg-emerald-100 transition"
+              //   >
               <li
-              key={baby.id}
-              className={`flex justify-between items-center border p-3 rounded-xl transition ${
-                currentBabyId === baby.id ? 'bg-emerald-100 border-emerald-400 shadow' : 'hover:bg-emerald-50'
-              }`}
-            >
+                key={baby.id}
+                className={`flex flex-col gap-2 border p-3 rounded-xl hover:bg-emerald-100 transition ${
+                  currentBabyId === baby.id
+                    ? "bg-emerald-100 border-emerald-400 shadow"
+                    : "hover:bg-emerald-50"
+                }`}
+              >
                 {editingId === baby.id ? (
                   <>
                     <div className="space-y-2">
@@ -175,8 +181,10 @@ export default function BabyDashboard() {
                         {baby.name}
                       </span>
                       {currentBabyId === baby.id && (
-  <span className="ml-2 text-xs text-green-600 font-medium">✅ Current</span>
-)}
+                        <span className="ml-2 text-xs text-green-600 font-medium">
+                          ✅ Current
+                        </span>
+                      )}
                     </div>
                     <div className="flex gap-2">
                       <button
