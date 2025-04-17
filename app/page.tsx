@@ -18,6 +18,8 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
 
+  const [isBooting, setIsBooting] = useState(true);
+
   const babyPhotoUrl =
     "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
@@ -39,6 +41,7 @@ export default function Home() {
             localStorage.setItem("babyName", babies[0].name);
           }
         }
+        setIsBooting(false); // ✅ done booting
       };
     
       fetchUserAndBaby();
@@ -106,8 +109,15 @@ export default function Home() {
     await supabase.auth.signInWithOAuth({ provider: 'google' });
   };
 
-  return (
-    <main className="min-h-screen bg-emerald-50 p-6 font-anuphan text-gray-800">
+  if (isBooting) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-emerald-50 text-gray-800">
+        <motion.div
+          className="w-10 h-10 border-4 border-emerald-400 border-t-transparent rounded-full animate-spin"
+          initial={{ rotate: 0 }}
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+        />
 
       <div className="max-w-xl mx-auto flex items-center gap-4 m-6">
         <img
@@ -246,6 +256,7 @@ export default function Home() {
       )}
     </main>
   );
+}
 }
 
 function getToday(): string {
