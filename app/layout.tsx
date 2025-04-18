@@ -29,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-anuphan bg-emerald-50 text-gray-800">
         <HamburgerMenu /> {/* ✅ Global menu */}
-        <main className="pt-16">{children}</main>
+        <main className="pt-12 bg-emerald-50">{children}</main>
       </body>
     </html>
   );

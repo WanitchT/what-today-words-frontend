@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import supabase from "@/lib/supabaseClient";
+import { BookA ,Pencil, X } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
@@ -82,13 +83,13 @@ export default function ReportPage() {
 
   const categoryBadge = (category?: string, id?: number) => {
     const categoryMap: { [key: string]: { label: string; emoji: string; color: string } } = {
-      family: { label: 'ครอบครัว', emoji: '👨‍👩‍👧', color: 'bg-pink-100 text-pink-800' },
-      animal: { label: 'สัตว์', emoji: '🐶', color: 'bg-purple-100 text-purple-800' },
-      food:   { label: 'อาหาร', emoji: '🍎', color: 'bg-red-100 text-red-800' },
-      object: { label: 'สิ่งของ', emoji: '📦', color: 'bg-yellow-100 text-yellow-800' },
-      emotion:{ label: 'อารมณ์', emoji: '😊', color: 'bg-blue-100 text-blue-800' },
-      action: { label: 'การกระทำ', emoji: '🏃', color: 'bg-green-100 text-green-800' },
-      other:  { label: 'อื่น ๆ', emoji: '🔍', color: 'bg-gray-200 text-gray-700' },
+      family: { label: 'ครอบครัว', emoji: '👨‍👩‍👧', color: 'bg-pink-50 text-pink-400' },
+      animal: { label: 'สัตว์', emoji: '🐶', color: 'bg-purple-50 text-purple-800' },
+      food:   { label: 'อาหาร', emoji: '🍎', color: 'bg-red-50 text-red-800' },
+      object: { label: 'สิ่งของ', emoji: '📦', color: 'bg-yellow-50 text-yellow-800' },
+      emotion:{ label: 'อารมณ์', emoji: '😊', color: 'bg-blue-50 text-blue-800' },
+      action: { label: 'การกระทำ', emoji: '🏃', color: 'bg-green-50 text-green-800' },
+      other:  { label: 'อื่น ๆ', emoji: '🔍', color: 'bg-gray-100 text-gray-700' },
     };
 
     const fallback = { label: category || '', emoji: '🏷️', color: 'bg-emerald-100 text-emerald-800' };
@@ -100,7 +101,7 @@ export default function ReportPage() {
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ duration: 0.3 }}
-        className={`inline-block text-xs px-2 py-1 rounded-full ml-2 ${color}`}
+        className={`inline-block text-xs px-2 py-1 rounded-full ml-4 ${color}`}
       >
         {emoji} {label}
         {id !== undefined && (
@@ -110,26 +111,27 @@ export default function ReportPage() {
               setNewCategory(category || '');
             }}
             className="ml-1 text-gray-500 hover:text-gray-700 text-xs"
-          >✏️</button>
+          ><Pencil size={12}/></button>
         )}
       </motion.span>
     );
   };
 
   return (
-    <main className="min-h-screen bg-mint-100 text-gray-800 p-6 font-sans">
-      <div className="max-w-xl mx-auto flex flex-col justify-between m-6">
-        <h1 className="text-2xl font-bold mb-4 text-emerald-600">
-          📝 คำศัพท์ทั้งหมดที่ {babyName} พูดได้
+    <main className="min-h-screen bg-emerald-50 text-gray-800 p-3">
+      <div className="max-w-xl flex flex-row justify-start my-6 mx-4 h-12">
+        <BookA className="text-orange-500 h-12 mr-2" size={48} />
+        <h1 className="text-xl font-bold mb-4 text-gray-600 flex items-center justify-center h-12">
+          <span>คำศัพท์ทั้งหมดที่ {babyName} พูดได้</span>
         </h1>
       </div>
 
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6">
+      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-2">
         <div className="mb-4">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="px-3 py-2 border rounded-xl text-sm"
+            className="px-3 py-2 border border-gray-200 rounded-xl text-sm"
           >
             <option value="all">🔍 ประเภทคำทั้งหมด</option>
             <option value="family">👨‍👩‍👧 ครอบครัว</option>
@@ -158,7 +160,7 @@ export default function ReportPage() {
           <p className="text-gray-500">ยังไม่มีคำศัพท์ที่บันทึกไว้</p>
         ) : (
           <AnimatePresence>
-            <ul className="space-y-4">
+            <div className="space-y-2">
               {filteredWords.map((word) => (
                 <motion.li
                   key={word.id}
@@ -166,10 +168,10 @@ export default function ReportPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="flex justify-between items-center border border-emerald-300 bg-emerald-50 p-4 rounded-xl hover:shadow-md transition bg-gradient-to-tr from-emerald-50 to-emerald-100"
+                  className="flex justify-between items-center border border-gray-300 bg-white px-4 py-2 rounded-xl hover:shadow-md transition hover:bg-gray-50"
                 >
                   <div>
-                    <p className="font-medium text-lg text-emerald-800">
+                    <p className="font-medium text-lg text-emerald-600">
                       {word.word}
                       {editingId === word.id ? (
                         <>
@@ -209,17 +211,17 @@ export default function ReportPage() {
                         </motion.span>
                       )}
                     </p>
-                    <p className="text-sm text-gray-500">{word.date}</p>
+                    <p className="text-xs text-gray-400 mt-1">{word.date}</p>
                   </div>
                   <button
                     onClick={() => handleDelete(word.id)}
-                    className="text-sm text-red-600 bg-red-100 rounded-2xl px-2 py-2 hover:text-red-800 font-semibold"
+                    className="text-xs text-red-400 bg-red-50 rounded-xl px-2 py-2 hover:text-red-800 hover:bg-red-200 font-semibold flex items-center justify-center flex-row"
                   >
-                    ✖ ลบ
+                    <X size={16}/> ลบ
                   </button>
                 </motion.li>
               ))}
-            </ul>
+            </div>
           </AnimatePresence>
         )}
       </div>

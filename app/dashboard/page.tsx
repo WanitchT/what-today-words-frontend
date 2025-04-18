@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { JSX, useEffect, useState } from 'react';
 import { motion } from "framer-motion";
 import {
   BarChart,
@@ -15,6 +15,8 @@ import {
   Cell
 } from 'recharts';
 import supabase from '@/lib/supabaseClient';
+
+import { Baby, BookA, CalendarDays, ChartLine, MessageCircle, CaseLower, CaseUpper, Tag, TrendingUp, TrendingDown} from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
@@ -98,33 +100,48 @@ export default function WordStatsDashboard() {
   }, [babyId, userId, startDate, endDate, selectedCategory]);
 
   return (
-    <main className="min-h-screen p-6 bg-emerald-50">
-      <h1 className="text-2xl font-bold text-emerald-700 mb-4">📊 สถิติคำศัพท์รายวัน</h1>
+    <main className="min-h-screen p-3 bg-emerald-50">
+      {/* <h1 className="text-2xl font-bold text-emerald-700 mb-4">📊 สถิติคำศัพท์รายวัน</h1> */}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      <StatCard
-        icon="🆕"
-        label="New Today"
-        value={stats.today.toString()}
-        trend={
-          stats.today > stats.yesterday ? "up" :
-          stats.today < stats.yesterday ? "down" :
-          null
-        }
-      />
+      <div className="max-w-xl flex flex-row justify-start my-6 mx-4 h-12">
+        <ChartLine className="text-teal-400 h-12 mr-2" size={48} />
+        <h1 className="text-xl font-bold mb-4 text-gray-600 flex items-center justify-center h-12">
+          <span>Dashboard</span>
+        </h1>
+      </div>
 
-      <StatCard
-        icon="📅"
-        label="This Week"
-        value={stats.thisWeek.toString()}
-        trend={
-          stats.thisWeek > stats.lastWeek ? "up" :
-          stats.thisWeek < stats.lastWeek ? "down" :
-          null
-        }
-      />
-        <StatCard icon="🔤" label="All-Time" value={stats.total.toString()} />
-        <StatCard icon="🏷️" label="Top Category" value={stats.topCategory} />
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <StatCard
+          icon={<MessageCircle />}
+          label="New words Today"
+          value={stats.today.toString()}
+          trend={
+            stats.today > stats.yesterday ? "up" :
+            stats.today < stats.yesterday ? "down" :
+            null
+          }
+        />
+
+        <StatCard
+          icon={<CalendarDays />}
+          label="This Week"
+          value={stats.thisWeek.toString()}
+          trend={
+            stats.thisWeek > stats.lastWeek ? "up" :
+            stats.thisWeek < stats.lastWeek ? "down" :
+            null
+          }
+        />
+        <StatCard 
+          icon={<CaseUpper />}
+          label="All-Time" 
+          value={stats.total.toString()} 
+        />
+        <StatCard 
+          icon={<Tag />}
+          label="Top Category" 
+          value={stats.topCategory} 
+        />
       </div>
 
       <div className="flex gap-4 mb-6 items-end">
@@ -243,24 +260,24 @@ function StatCard({
   value,
   trend,
 }: {
-  icon: string;
+  icon: string | JSX.Element;
   label: string;
   value: string;
-  trend?: "up" | "down" | null;
+  trend?: "up" | "down" | JSX.Element | null;
 }) {
   const arrow =
-    trend === "up" ? "📈" : trend === "down" ? "📉" : "";
+    trend === "up" ? <TrendingUp className='text-green-600'/> : trend === "down" ? <TrendingDown className='text-amber-600'/> : "";
 
   const trendColor =
     trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-gray-400";
 
   return (
-    <div className="bg-white p-4 rounded-xl shadow flex flex-col items-start">
-      <div className="text-2xl mb-1">{icon}</div>
-      <div className="text-sm text-gray-500">{label}</div>
-      <div className="text-xl font-bold text-emerald-600 flex items-center gap-1">
+    <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col items-start">
+      {/* <div className="text-xl mb-1"></div> */}
+      <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">{icon} {label} {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>}</div>
+      <div className="text-4xl font-semibold text-emerald-600 flex items-center gap-1">
         {value}
-        {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>}
+        
       </div>
     </div>
   );

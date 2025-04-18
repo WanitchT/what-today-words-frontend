@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
+import Image from "next/image";
 // import { Menu, X } from "lucide-react";
+import { Baby, BookA } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
@@ -160,49 +162,19 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-emerald-50 p-6 font-anuphan text-gray-800">
-      
-      {/* <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ x: -300, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -300, opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 w-full h-full bg-white z-50 p-6"
-          >
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-lg font-bold text-emerald-600">Menu</h2>
-              <button onClick={() => setIsMenuOpen(false)}>
-                <X className="w-6 h-6 text-gray-700" />
-              </button>
-            </div>
-            <ul className="space-y-4">
-              <li><Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🏠 หน้าแรก</Link></li>
-              <li><Link href="/report" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">📋 คำศัพท์ทั้งหมด</Link></li>
-              <li><Link href="/babies" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🧒 รายชื่อเด็ก</Link></li>
-              <li><Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">📊 ดูสถิติ</Link></li>
-              <li><button onClick={handleClearData} className="text-lg text-red-600">🚪 Log Out</button></li>
-            </ul>
-          </motion.div>
-        )}
-      </AnimatePresence> */}
+    <main className="min-h-screen bg-emerald-50 p-3 font-anuphan text-gray-800">
       
       <div className="max-w-xl mx-auto relative m-6">
-        {/* <motion.button
-          className="absolute top-0 left-0 p-2 rounded-xl border border-emerald-300 hover:bg-emerald-100"
-          onClick={() => setIsMenuOpen(true)}
-          whileTap={{ scale: 0.9 }}
-          whileHover={{ scale: 1.1 }}
-        >
-          <Menu className="w-6 h-6 text-emerald-700" />
-        </motion.button> */}
+
         <div className="flex items-center gap-4 pl-12">
-          <img
-            src={babyPhotoUrl}
-            alt="Baby"
-            className="w-20 h-20 rounded-full object-cover border-2 border-emerald-300 shadow"
-          />
+        <Image
+  src={babyPhotoUrl || "/images/baby-42-128.png"} // fallback if needed
+  alt="Baby"
+  width={80}
+  height={80}
+  className="w-20 h-20 rounded-full object-cover border-2 border-emerald-300 shadow"
+  priority
+/>
           <h1 className="text-3xl font-bold text-emerald-600 font-mitr">
             วันนี้ {babyName || "ลูก"} พูดอะไร?
           </h1>
@@ -316,25 +288,21 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <div className="flex justify-between flex-col max-w-xl mx-auto p-2 mt-6 space-y-2">
+          <div className="flex justify-between flex-row max-w-xl mx-auto p-2 mt-6 space-y-2 space-x-4">
             <Link
               href={`/report?userId=${userId}`}
-              className="text-gray-800 text-center hover:underline inline-block px-4 py-2  bg-orange-300 rounded-xl shadow-xl"
+              className="text-md text-center w-full flex justify-center items-center bg-orange-300 text-orange-700 rounded-xl py-2 shadow-md h-14"
             >
-              ดูคำศัพท์ทั้งหมด
+              <BookA className="text-orange-700 mr-2 text-2xl" />{" "}
+              <span>ดูคำศัพท์ทั้งหมด</span>
             </Link>
             <Link
               href="/babies"
-              className="text-center text-sm text-emerald-600 hover:underline"
+              className="text-md text-center text-gray-700 w-full flex justify-center items-center bg-gray-300 rounded-xl py-2 shadow-md h-14"
             >
-              🧒 Switch Baby Profile
+              <Baby className="text-gray-700 mr-2 text-2xl" />{" "}
+              <span>รายชื่อลูก</span>
             </Link>
-            {/* <button
-              onClick={handleClearData}
-              className="mt-8 text-sm text-gray-800 hover:underline bg-gray-300 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
-            >
-              Log Out
-            </button> */}
           </div>
         </motion.div>
       )}

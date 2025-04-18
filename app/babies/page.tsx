@@ -5,6 +5,7 @@ import supabase from "@/lib/supabaseClient";
 import { motion } from "framer-motion";
 // import Link from "next/link";
 // import { useRouter } from 'next/navigation';
+import { Baby, Check } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 const defaultAvatarUrl = '/images/baby-42-128.png';
@@ -114,14 +115,21 @@ export default function BabyDashboard() {
   };
 
   return (
-    <main className="min-h-screen bg-emerald-50 p-6">
-      <div className="max-w-xl mx-auto flex flex-col justify-between m-6">
+    <main className="min-h-screen bg-emerald-50 p-3">
+      {/* <div className="max-w-xl mx-auto flex flex-col justify-between m-6">
         <h1 className="text-2xl font-bold mb-4 text-emerald-600">
-        👶 รายชื่อเด็ก
+        👶 รายชื่อลูก
+        </h1>
+      </div> */}
+
+      <div className="max-w-xl flex flex-row justify-start my-6 mx-4 h-12">
+        <Baby className="text-teal-400 h-12 mr-2" size={48} />
+        <h1 className="text-xl font-bold mb-4 text-gray-600 flex items-center justify-center h-12">
+          <span>รายชื่อลูก</span>
         </h1>
       </div>
 
-      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 space-y-4">
+      <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-2 space-y-4">
         {/* <h1 className="text-2xl font-bold text-emerald-600">👶 My Babies</h1> */}
 
         {loading ? (
@@ -194,15 +202,15 @@ export default function BabyDashboard() {
                       <img
                         src={baby.photoUrl || defaultAvatarUrl}
                         alt={baby.name}
-                        className="w-10 h-10 rounded-full object-cover border-2 border-emerald-200"
+                        className="w-14 h-14 rounded-full object-cover border-2 border-emerald-200"
                       />
                       <span className="text-lg font-semibold text-gray-800">
                         {baby.name}
                       </span>
                       {currentBabyId === baby.id && (
-                        <span className="ml-2 text-xs text-green-600 font-medium">
-                          ✅ ใช้งานอยู่
-                        </span>
+                        <div className="ml-2 text-xs text-green-600 font-medium flex flex-row items-center">
+                          <Check/> <span>ใช้งานอยู่</span>
+                        </div>
                       )}
                     </div>
                     <div className="flex gap-2">
@@ -236,7 +244,7 @@ export default function BabyDashboard() {
               onClick={() => setAdding(true)}
               className="text-sm text-emerald-700 bg-emerald-100 px-4 py-2 rounded-xl hover:bg-emerald-200"
             >
-              ➕ เพิ่มรายชื่อเด็ก
+              ➕ เพิ่มรายชื่อลูก
             </button>
           ) : (
             <div className="space-y-2">
@@ -287,12 +295,6 @@ export default function BabyDashboard() {
           )}
         </div>
 
-        {/* <Link
-          href="/"
-          className="inline-block mt-4 text-center text-sm text-gray-500 hover:underline"
-        >
-          ← Back to Home
-        </Link> */}
       </div>
     </main>
   );
