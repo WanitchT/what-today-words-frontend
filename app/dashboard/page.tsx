@@ -16,7 +16,7 @@ import {
 } from 'recharts';
 import supabase from '@/lib/supabaseClient';
 
-import { Baby, BookA, CalendarDays, ChartLine, MessageCircle, CaseLower, CaseUpper, Tag, TrendingUp, TrendingDown} from "lucide-react";
+import { CalendarDays, ChartLine, MessageCircle, CaseUpper, Tag, TrendingUp, TrendingDown} from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
