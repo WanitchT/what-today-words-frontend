@@ -5,7 +5,7 @@ import supabase from "@/lib/supabaseClient";
 import Link from "next/link";
 // import { useRouter } from 'next/navigation';
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 const defaultAvatarUrl = '/images/baby-42-128.png';
 
 type Baby = {

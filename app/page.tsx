@@ -6,7 +6,7 @@ import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
 import { Menu, X } from "lucide-react";
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 export default function Home() {
   const [babyName, setBabyName] = useState<string>("");

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import supabase from "@/lib/supabaseClient";
 
-const API_BASE = "https://what-today-words-backend-production.up.railway.app";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 type WordEntry = {
   id: number;
