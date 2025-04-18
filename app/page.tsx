@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import supabase from "@/lib/supabaseClient";
-import { Menu, X } from "lucide-react";
+// import { Menu, X } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
@@ -19,9 +19,9 @@ export default function Home() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [isBooting, setIsBooting] = useState(true);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [babyPhotoUrl, setBabyPhotoUrl] = useState<string>("https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg");
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [babyPhotoUrl, setBabyPhotoUrl] = useState<string>("/images/baby-42-128.png");
+  // const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // const babyPhotoUrl = "https://i.postimg.cc/nLdmZ5Q8/S-1927579622.jpg";
 
@@ -124,19 +124,19 @@ export default function Home() {
     setBabyId(data.id);
   };
 
-  const handleClearData = async () => {
-    setIsLoggingOut(true);
-    localStorage.removeItem("babyId");
-    localStorage.removeItem("babyName");
-    await supabase.auth.signOut();
-    setBabyId(null);
-    setBabyName("");
-    setUserEmail(null);
-    setUserId(null);
-    setIsLoggingOut(false);
-  };
+  // const handleClearData = async () => {
+  //   setIsLoggingOut(true);
+  //   localStorage.removeItem("babyId");
+  //   localStorage.removeItem("babyName");
+  //   await supabase.auth.signOut();
+  //   setBabyId(null);
+  //   setBabyName("");
+  //   setUserEmail(null);
+  //   setUserId(null);
+  //   setIsLoggingOut(false);
+  // };
 
-  const handleLogin = async () => {
+  const handleLoginWithGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
@@ -145,7 +145,8 @@ export default function Home() {
     });
   };
 
-  if (isBooting || isLoggingOut) {
+  // if (isBooting || isLoggingOut) {
+  if (isBooting) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-emerald-50 text-gray-800">
         <motion.div
@@ -161,7 +162,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-emerald-50 p-6 font-anuphan text-gray-800">
       
-      <AnimatePresence>
+      {/* <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ x: -300, opacity: 0 }}
@@ -177,24 +178,25 @@ export default function Home() {
               </button>
             </div>
             <ul className="space-y-4">
-              <li><Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🏠 Home</Link></li>
-              <li><Link href="/report" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">📋 Report</Link></li>
-              <li><Link href="/babies" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🧒 Switch Baby</Link></li>
+              <li><Link href="/" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🏠 หน้าแรก</Link></li>
+              <li><Link href="/report" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">📋 คำศัพท์ทั้งหมด</Link></li>
+              <li><Link href="/babies" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">🧒 รายชื่อเด็ก</Link></li>
+              <li><Link href="/dashboard" onClick={() => setIsMenuOpen(false)} className="text-lg text-emerald-700">📊 ดูสถิติ</Link></li>
               <li><button onClick={handleClearData} className="text-lg text-red-600">🚪 Log Out</button></li>
             </ul>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence> */}
       
       <div className="max-w-xl mx-auto relative m-6">
-        <motion.button
+        {/* <motion.button
           className="absolute top-0 left-0 p-2 rounded-xl border border-emerald-300 hover:bg-emerald-100"
           onClick={() => setIsMenuOpen(true)}
           whileTap={{ scale: 0.9 }}
           whileHover={{ scale: 1.1 }}
         >
           <Menu className="w-6 h-6 text-emerald-700" />
-        </motion.button>
+        </motion.button> */}
         <div className="flex items-center gap-4 pl-12">
           <img
             src={babyPhotoUrl}
@@ -202,7 +204,7 @@ export default function Home() {
             className="w-20 h-20 rounded-full object-cover border-2 border-emerald-300 shadow"
           />
           <h1 className="text-3xl font-bold text-emerald-600 font-mitr">
-            วันนี้ {babyName || "..."} พูดอะไร?
+            วันนี้ {babyName || "ลูก"} พูดอะไร?
           </h1>
         </div>
       </div>
@@ -215,12 +217,12 @@ export default function Home() {
       >
         {!userEmail ? (
           <div className="text-center space-y-4">
-            <p className="text-gray-600">กรุณาเข้าสู่ระบบเพื่อเริ่มต้น</p>
+            <p className="text-gray-600">กรุณาเข้าสู่ระบบเพื่อเริ่มใช้งาน</p>
             <button
-              onClick={handleLogin}
-              className="bg-emerald-500 text-white px-6 py-2 rounded-xl hover:bg-emerald-600"
+              onClick={handleLoginWithGoogle}
+              className="text-white  bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between mr-2 mb-2"
             >
-              🔐 Sign in with Google
+              <svg className="mr-2 -ml-1 w-4 h-4" aria-hidden="true" focusable="false" data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 488 512"><path fill="currentColor" d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path></svg> Sign in with Google
             </button>
           </div>
         ) : !babyId ? (
@@ -327,12 +329,12 @@ export default function Home() {
             >
               🧒 Switch Baby Profile
             </Link>
-            <button
+            {/* <button
               onClick={handleClearData}
               className="mt-8 text-sm text-gray-800 hover:underline bg-gray-300 px-4 py-2 rounded-xl transition duration-200 ease-in-out"
             >
               Log Out
-            </button>
+            </button> */}
           </div>
         </motion.div>
       )}
