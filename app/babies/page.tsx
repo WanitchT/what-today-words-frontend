@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import supabase from "@/lib/supabaseClient";
-import Link from "next/link";
+import { motion } from "framer-motion";
+// import Link from "next/link";
 // import { useRouter } from 'next/navigation';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
@@ -114,11 +115,27 @@ export default function BabyDashboard() {
 
   return (
     <main className="min-h-screen bg-emerald-50 p-6">
+      <div className="max-w-xl mx-auto flex flex-col justify-between m-6">
+        <h1 className="text-2xl font-bold mb-4 text-emerald-600">
+        👶 รายชื่อเด็ก
+        </h1>
+      </div>
+
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6 space-y-4">
-        <h1 className="text-2xl font-bold text-emerald-600">👶 My Babies</h1>
+        {/* <h1 className="text-2xl font-bold text-emerald-600">👶 My Babies</h1> */}
 
         {loading ? (
-          <p className="text-gray-500">Loading...</p>
+          <div className="flex flex-col justify-center items-center py-10 mb-10">
+          <motion.div
+            className="w-10 h-10 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+            initial={{ rotate: 0 }}
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          />
+          <p className="text-md font-medium text-gray-600 animate-pulse m-6">
+            กำลังโหลดรายชื่อเด็ก...
+          </p>
+        </div>
         ) : babies.length === 0 ? (
           <p className="text-gray-500">
             No babies found. Please add one below.
@@ -134,8 +151,8 @@ export default function BabyDashboard() {
                 key={baby.id}
                 className={`flex flex-col gap-2 border p-3 rounded-xl hover:bg-emerald-100 transition ${
                   currentBabyId === baby.id
-                    ? "bg-emerald-100 border-emerald-400 shadow"
-                    : "hover:bg-emerald-50"
+                    ? "bg-emerald-50 border-emerald-200 shadow-md bg-gradient-to-tr from-emerald-50 to-emerald-200"
+                    : "hover:bg-gray-100"
                 }`}
               >
                 {editingId === baby.id ? (
@@ -160,13 +177,13 @@ export default function BabyDashboard() {
                           onClick={() => handleEditSave(baby.id)}
                           className="bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600"
                         >
-                          Save
+                          บันทึก
                         </button>
                         <button
                           onClick={() => setEditingId(null)}
                           className="text-sm text-gray-600 hover:underline"
                         >
-                          Cancel
+                          ยกเลิก
                         </button>
                       </div>
                     </div>
@@ -184,16 +201,16 @@ export default function BabyDashboard() {
                       </span>
                       {currentBabyId === baby.id && (
                         <span className="ml-2 text-xs text-green-600 font-medium">
-                          ✅ Current
+                          ✅ ใช้งานอยู่
                         </span>
                       )}
                     </div>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleSelect(baby)}
-                        className="text-sm text-white bg-emerald-500 px-3 py-1 rounded-xl hover:bg-emerald-600"
+                        className="text-sm text-white bg-emerald-500 px-3 py-1 rounded-xl hover:bg-emerald-400"
                       >
-                        Select
+                        เลือก
                       </button>
                       <button
                         onClick={() => {
@@ -201,9 +218,9 @@ export default function BabyDashboard() {
                           setEditedName(baby.name);
                           setEditedPhotoUrl(baby.photoUrl ?? "");
                         }}
-                        className="text-sm text-gray-600 hover:underline"
+                        className="text-sm text-gray-600 bg-gray-200 px-3 py-1 rounded-xl hover:bg-gray-100 hover:shadow-2xl hover:transition hover:duration-200"
                       >
-                        Edit
+                        แก้ไข
                       </button>
                     </div>
                   </div>
@@ -219,15 +236,15 @@ export default function BabyDashboard() {
               onClick={() => setAdding(true)}
               className="text-sm text-emerald-700 bg-emerald-100 px-4 py-2 rounded-xl hover:bg-emerald-200"
             >
-              ➕ Add New Baby
+              ➕ เพิ่มรายชื่อเด็ก
             </button>
           ) : (
             <div className="space-y-2">
               <input
                 value={newBabyName}
                 onChange={(e) => setNewBabyName(e.target.value)}
-                placeholder="New baby name"
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+                placeholder="ระบุชื่อเด็ก"
+                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring text-gray-600 focus:ring-emerald-300"
               />
               <input
                 value={newPhotoUrl}
@@ -235,8 +252,8 @@ export default function BabyDashboard() {
                   setNewPhotoUrl(e.target.value);
                   setPhotoPreviewUrl(e.target.value);
                 }}
-                placeholder="Photo URL (optional)"
-                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring focus:ring-emerald-300"
+                placeholder="ระบุ URL รูปภาพ (ไม่บังคับ)"
+                className="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring text-gray-600 focus:ring-emerald-300"
               />
               {photoPreviewUrl && (
                 <div className="pt-2">
@@ -253,7 +270,7 @@ export default function BabyDashboard() {
                   onClick={handleAddBaby}
                   className="bg-emerald-500 text-white px-4 py-2 rounded-xl hover:bg-emerald-600"
                 >
-                  Create
+                  สร้าง
                 </button>
                 <button
                   onClick={() => {
@@ -263,19 +280,19 @@ export default function BabyDashboard() {
                   }}
                   className="text-sm text-gray-600 hover:underline"
                 >
-                  Cancel
+                  ยกเลิก
                 </button>
               </div>
             </div>
           )}
         </div>
 
-        <Link
+        {/* <Link
           href="/"
           className="inline-block mt-4 text-center text-sm text-gray-500 hover:underline"
         >
           ← Back to Home
-        </Link>
+        </Link> */}
       </div>
     </main>
   );

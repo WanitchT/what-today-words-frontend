@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import supabase from "@/lib/supabaseClient";
 
@@ -123,12 +122,6 @@ export default function ReportPage() {
         <h1 className="text-2xl font-bold mb-4 text-emerald-600">
           📝 คำศัพท์ทั้งหมดที่ {babyName} พูดได้
         </h1>
-        <Link
-          href="/"
-          className="text-gray-500 text-center hover:underline inline-block px-4 py-2 rounded-xl bg-gray-100 mb-4"
-        >
-          ← กลับหน้าแรก
-        </Link>
       </div>
 
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6">
@@ -138,14 +131,14 @@ export default function ReportPage() {
             onChange={(e) => setFilter(e.target.value)}
             className="px-3 py-2 border rounded-xl text-sm"
           >
-            <option value="all">🔍 All Categories</option>
-            <option value="family">👨‍👩‍👧 Family</option>
-            <option value="animal">🐶 Animal</option>
-            <option value="food">🍎 Food</option>
-            <option value="object">📦 Object</option>
-            <option value="emotion">😊 Emotion</option>
-            <option value="action">🏃 Action</option>
-            <option value="other">🔍 Other</option>
+            <option value="all">🔍 ประเภทคำทั้งหมด</option>
+            <option value="family">👨‍👩‍👧 ครอบครัว</option>
+            <option value="animal">🐶 สัตว์</option>
+            <option value="food">🍎 อาหาร</option>
+            <option value="object">📦 สิ่งของ</option>
+            <option value="emotion">😊 อารมณ์</option>
+            <option value="action">🏃 การกระทำ</option>
+            <option value="other">🔍 อื่น ๆ</option>
           </select>
         </div>
 
@@ -173,7 +166,7 @@ export default function ReportPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="flex justify-between items-center bg-emerald-50 p-4 rounded-xl shadow-sm hover:shadow-md transition"
+                  className="flex justify-between items-center border border-emerald-300 bg-emerald-50 p-4 rounded-xl hover:shadow-md transition bg-gradient-to-tr from-emerald-50 to-emerald-100"
                 >
                   <div>
                     <p className="font-medium text-lg text-emerald-800">
@@ -185,14 +178,14 @@ export default function ReportPage() {
                             onChange={(e) => setNewCategory(e.target.value)}
                             className="ml-2 text-sm border rounded px-2 py-1"
                           >
-                            <option value="">-- Select --</option>
-                            <option value="family">👨‍👩‍👧 Family</option>
-                            <option value="animal">🐶 Animal</option>
-                            <option value="food">🍎 Food</option>
-                            <option value="object">📦 Object</option>
-                            <option value="emotion">😊 Emotion</option>
-                            <option value="action">🏃 Action</option>
-                            <option value="other">🔍 Other</option>
+                            <option value="">-- เลือกประเภทคำ --</option>
+                            <option value="family">👨‍👩‍👧 ครอบครัว</option>
+                            <option value="animal">🐶 สัตว์</option>
+                            <option value="food">🍎 อาหาร</option>
+                            <option value="object">📦 สิ่งของ</option>
+                            <option value="emotion">😊 อารมณ์</option>
+                            <option value="action">🏃 การกระทำ</option>
+                            <option value="other">🔍 อื่น ๆ</option>
                           </select>
                           <button
                             onClick={() => handleCategoryUpdate(word.id)}

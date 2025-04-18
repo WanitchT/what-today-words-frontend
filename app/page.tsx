@@ -288,7 +288,7 @@ export default function Home() {
             </select>
             <button
               onClick={handleWordSubmit}
-              className="bg-teal-400 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
+              className="bg-teal-400 bg-gradient-to-tr from-teal-300 to-green-400 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
             >
               เพิ่มคำศัพท์
             </button>
