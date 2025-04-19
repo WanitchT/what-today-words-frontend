@@ -26,7 +26,7 @@ export default function ReportPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newCategory, setNewCategory] = useState<string>('');
 
-  const [sortAsc, setSortAsc] = useState<boolean>(true);
+  const [sortAsc, setSortAsc] = useState<boolean>(false);
 
   const filteredWords = words.filter((w) =>
     filter === 'all' ? true : w.category === filter

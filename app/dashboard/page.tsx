@@ -51,6 +51,8 @@ export default function WordStatsDashboard() {
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
 
   const defaultStats: Stats = {
     today: 0,
@@ -79,7 +81,7 @@ export default function WordStatsDashboard() {
 
   useEffect(() => {
     if (!babyId || !userId) return;
-
+    setIsLoading(true);
     let url = `${API_BASE}/api/stats?babyId=${babyId}&userId=${userId}`;
     if (startDate) url += `&start=${startDate}`;
     if (endDate) url += `&end=${endDate}`;
@@ -90,6 +92,7 @@ export default function WordStatsDashboard() {
       .then((stats: WordStat[]) => {
         const sorted = stats.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
         setData(sorted);
+        setIsLoading(false);
       });
 
     // Fetch aggregate stats (custom endpoint or logic)
@@ -98,6 +101,7 @@ export default function WordStatsDashboard() {
       .then((s) => {
         setStats(s);
         setTopCategories(s.topCategories);
+        setIsLoading(false);
       });
   }, [babyId, userId, startDate, endDate, selectedCategory]);
 
@@ -188,7 +192,19 @@ export default function WordStatsDashboard() {
         )}
       </div>
 
-      {data.length === 0 ? (
+      {isLoading ? (
+          <div className="flex flex-col justify-center items-center py-10 mb-10">
+            <motion.div
+              className="w-10 h-10 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+            />
+            <p className="text-md font-medium animate-pulse m-6 text-gray-500">
+              กำลังโหลดข้อมูล...
+            </p>
+          </div>
+        ) : data.length === 0 ? (
         <p className="text-gray-500">ยังไม่มีข้อมูล dashboard</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -309,9 +325,22 @@ function StatCard({
         <span className="text-teal-400">{icon}</span> {label} 
         {/* {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>} */}
       </div>
-      <div className="text-5xl font-bold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
-        {value}
-      </div>
+
+      {value === '0' ? (
+        <div className="m-6 font-bold flex items-center gap-2 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
+          <motion.div
+              className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+            />
+        </div>
+      ) : ( 
+        <div className="text-5xl font-bold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
+          {value}
+        </div>
+      )}
+
       <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">
          {trend && 
           <div className='flex flex-row items-center gap-1'>
@@ -345,10 +374,27 @@ function StatCardForTopCategory({
       {/* <div className="text-xl mb-1"></div> */}
       <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">
       <span className="text-teal-400">{icon}</span> {label} {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>}</div>
+
+      {value === '-' ? (
+        <div className="m-6 font-bold flex items-center gap-2 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
+          <motion.div
+              className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+              initial={{ rotate: 0 }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+            />
+        </div>
+      ) : ( 
+        <div className="text-3xl font-semibold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
+          {value}
+        </div>
+      )}
+
+{/* 
       <div className="text-3xl font-semibold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
         {value}
         
-      </div>
+      </div> */}
     </div>
   );
 }
