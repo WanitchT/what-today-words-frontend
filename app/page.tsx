@@ -166,16 +166,16 @@ export default function Home() {
       
       <div className="max-w-xl mx-auto relative m-6">
 
-        <div className="flex items-center gap-4 pl-12">
+        <div className="flex items-center gap-4 pl-2">
         <Image
-  src={babyPhotoUrl || "/images/baby-42-128.png"} // fallback if needed
-  alt="Baby"
-  width={80}
-  height={80}
-  className="w-20 h-20 rounded-full object-cover border-2 border-emerald-300 shadow"
-  priority
-/>
-          <h1 className="text-3xl font-bold text-emerald-600 font-mitr">
+          src={babyPhotoUrl || "/images/baby-42-128.png"} // fallback if needed
+          alt="Baby"
+          width={72}
+          height={72}
+          className="w-18 h-18 rounded-full object-cover border-2 border-emerald-300 shadow"
+          priority
+        />
+          <h1 className="text-2xl font-bold bg-gradient-to-br from-[#03c8ae] from-55% to-[#076bed] text-transparent bg-clip-text">
             วันนี้ {babyName || "ลูก"} พูดอะไร?
           </h1>
         </div>
@@ -185,7 +185,7 @@ export default function Home() {
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-6"
+        className="max-w-xl mx-auto bg-white rounded-2xl shadow-md p-6"
       >
         {!userEmail ? (
           <div className="text-center space-y-4">
@@ -260,7 +260,7 @@ export default function Home() {
             </select>
             <button
               onClick={handleWordSubmit}
-              className="bg-teal-400 bg-gradient-to-tr from-teal-300 to-green-400 text-white px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
+              className="bg-teal-400 bg-gradient-to-tr from-teal-300 to-green-400 text-teal-800 px-4 py-2 rounded-xl hover:bg-emerald-600 transition"
             >
               เพิ่มคำศัพท์
             </button>
