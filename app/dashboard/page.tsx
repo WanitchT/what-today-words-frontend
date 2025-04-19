@@ -43,8 +43,8 @@ export default function WordStatsDashboard() {
   const [data, setData] = useState<WordStat[]>([]);
   const [babyId, setBabyId] = useState<number | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
-  const [startDate, setStartDate] = useState<string>('');
-  const [endDate, setEndDate] = useState<string>('');
+  // const [startDate, setStartDate] = useState<string>('');
+  // const [endDate, setEndDate] = useState<string>('');
 
   type CategoryStat = { category: string; count: number };
   const [topCategories, setTopCategories] = useState<CategoryStat[]>([]);
@@ -63,6 +63,8 @@ export default function WordStatsDashboard() {
   };
   
   const [stats, setStats] = useState<Stats>(defaultStats);
+  const [startDate, setStartDate] = useState<string>(get30DaysAgo());
+  const [endDate, setEndDate] = useState<string>(getToday());
 
   useEffect(() => {
     const storedId = localStorage.getItem('babyId');
@@ -99,6 +101,19 @@ export default function WordStatsDashboard() {
       });
   }, [babyId, userId, startDate, endDate, selectedCategory]);
 
+
+  function getToday(): string {
+    return new Date().toISOString().split("T")[0];
+  }
+  
+  function get30DaysAgo(): string {
+    const d = new Date();
+    d.setDate(d.getDate() - 30);
+    return d.toISOString().split("T")[0];
+  }
+
+  
+
   return (
     <main className="min-h-screen p-3 bg-emerald-50">
       {/* <h1 className="text-2xl font-bold text-emerald-700 mb-4">📊 สถิติคำศัพท์รายวัน</h1> */}
@@ -113,7 +128,7 @@ export default function WordStatsDashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
         <StatCard
           icon={<MessageCircle />}
-          label="New words Today"
+          label="คำศัพท์วันนี้"
           value={stats.today.toString()}
           trend={
             stats.today > stats.yesterday ? "up" :
@@ -124,7 +139,7 @@ export default function WordStatsDashboard() {
 
         <StatCard
           icon={<CalendarDays />}
-          label="This Week"
+          label="คำศัพท์อาทิตย์นี้"
           value={stats.thisWeek.toString()}
           trend={
             stats.thisWeek > stats.lastWeek ? "up" :
@@ -134,33 +149,33 @@ export default function WordStatsDashboard() {
         />
         <StatCard 
           icon={<CaseUpper />}
-          label="All-Time" 
+          label="คำศัพท์ทั้งหมด" 
           value={stats.total.toString()} 
         />
-        <StatCard 
+        <StatCardForTopCategory 
           icon={<Tag />}
-          label="Top Category" 
+          label="หมวดหมู่ที่ใช้บ่อยที่สุด" 
           value={stats.topCategory} 
         />
       </div>
 
       <div className="flex gap-4 mb-6 items-end">
         <div>
-          <label className="block text-sm text-gray-600 mb-1">จากวันที่</label>
+          <label className="block text-sm text-gray-600 mb-1 ">วันที่เริ่มต้น</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            className="border px-3 py-2 text-gray-600 rounded-xl"
+            className="border px-3 py-2 text-gray-600 rounded-xl text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm text-gray-600 mb-1">ถึงวันที่</label>
+          <label className="block text-sm text-gray-600 mb-1">วันที่สิ้นสุด</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            className="border px-3 py-2 text-gray-600 rounded-xl"
+            className="border px-3 py-2 text-gray-600 rounded-xl text-sm"
           />
         </div>
         {selectedCategory && (
@@ -178,8 +193,14 @@ export default function WordStatsDashboard() {
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Bar Chart Section */}
-          <div className="bg-white p-4 rounded-xl shadow">
-            <h2 className="text-lg font-semibold text-emerald-600 mb-2">📅 Words Per Day</h2>
+          <div >
+
+            <div className="max-w-xl flex flex-row justify-start my-2 mx-4 h-12">
+              <CalendarDays className="text-teal-400 h-12 mr-2" size={26} />
+              <h1 className="text-lg font-bold mb-2 text-gray-600 flex items-center justify-center h-12">
+                <span>คำศัพท์/วัน</span>
+              </h1>
+            </div>
             
             {selectedCategory && (
               <p className="text-sm text-gray-600 mb-2">
@@ -192,6 +213,7 @@ export default function WordStatsDashboard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
+              className="bg-white p-4 rounded-xl shadow text-xs"
             >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data}>
@@ -202,7 +224,8 @@ export default function WordStatsDashboard() {
                 <Bar
                   dataKey="count"
                   fill="#34D399"
-                  radius={[4, 4, 0, 0]}
+                  radius={[10, 10, 0, 0]}
+                  barSize={40}
                   isAnimationActive={true}
                   animationDuration={500}
                   activeBar={{ fill: "#10B981", stroke: "#047857", strokeWidth: 2 }}
@@ -213,12 +236,19 @@ export default function WordStatsDashboard() {
           </div>
 
           {/* Pie Chart Section */}
-          <div className="bg-white p-4 rounded-xl shadow">
-            <h2 className="text-lg font-semibold text-emerald-600 mb-2">🏷️ Top 3 Categories</h2>
+          <div>
+            <div className="max-w-xl flex flex-row justify-start my-2 mx-4 h-12">
+              <Tag className="text-teal-400 h-12 mr-2" size={26} />
+              <h1 className="text-lg font-bold mb-2 text-gray-600 flex items-center justify-center h-12">
+                <span>Top 3 Categories</span>
+              </h1>
+            </div>
+
             <motion.div
-  whileHover={{ scale: 1.02 }}
-  transition={{ type: 'spring', stiffness: 300 }}
->
+              whileHover={{ scale: 1.02 }}
+              transition={{ type: 'spring', stiffness: 300 }}
+              className="bg-white p-4 rounded-xl shadow"
+            >
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
                 <Pie
@@ -272,10 +302,49 @@ function StatCard({
     trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-gray-400";
 
   return (
-    <div className="bg-white p-4 rounded-2xl shadow-md flex flex-col items-start">
+    <div className="bg-white p-4 rounded-2xl shadow-sm flex flex-col items-start">
       {/* <div className="text-xl mb-1"></div> */}
-      <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">{icon} {label} {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>}</div>
-      <div className="text-4xl font-semibold text-emerald-600 flex items-center gap-1">
+      <div className="text-xs text-gray-500 flex flex-row justify-center text-center items-center gap-2">
+        <span className="text-teal-400">{icon}</span> {label} 
+        {/* {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>} */}
+      </div>
+      <div className="text-5xl font-bold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
+        {value}
+      </div>
+      <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">
+         {trend && 
+          <div className='flex flex-row items-center gap-1'>
+            <span>trending</span> 
+            <span className={`text-base ${trendColor}`}>{arrow}</span></div>
+          }
+      </div>
+    </div>
+  );
+}
+
+function StatCardForTopCategory({
+  icon,
+  label,
+  value,
+  trend,
+}: {
+  icon: string | JSX.Element;
+  label: string;
+  value: string;
+  trend?: "up" | "down" | JSX.Element | null;
+}) {
+  const arrow =
+    trend === "up" ? <TrendingUp className='text-green-600'/> : trend === "down" ? <TrendingDown className='text-amber-600'/> : "";
+
+  const trendColor =
+    trend === "up" ? "text-green-600" : trend === "down" ? "text-red-500" : "text-gray-400";
+
+  return (
+    <div className="bg-white p-4 rounded-2xl shadow-sm flex flex-col items-start">
+      {/* <div className="text-xl mb-1"></div> */}
+      <div className="text-xs text-gray-500 flex flex-row justify-center items-center gap-2">
+      <span className="text-teal-400">{icon}</span> {label} {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>}</div>
+      <div className="text-3xl font-semibold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
         {value}
         
       </div>
