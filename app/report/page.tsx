@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import supabase from "@/lib/supabaseClient";
-import { BookA ,Pencil, X } from "lucide-react";
+import { BookA ,Pencil, X, CalendarArrowDown, CalendarArrowUp } from "lucide-react";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
@@ -26,6 +26,8 @@ export default function ReportPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [newCategory, setNewCategory] = useState<string>('');
 
+  const [sortAsc, setSortAsc] = useState<boolean>(true);
+
   const filteredWords = words.filter((w) =>
     filter === 'all' ? true : w.category === filter
   );
@@ -46,14 +48,14 @@ export default function ReportPage() {
   useEffect(() => {
     if (!babyId || !userId) return;
     setIsLoading(true);
-    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}`)
+    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}`)
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched words:", data); // 👈 ADD THIS
         setWords(Array.isArray(data) ? data : []);
         setIsLoading(false);
       });
-  }, [babyId, userId]);
+  }, [babyId, userId, sortAsc]);
 
   const handleDelete = async (id: number) => {
     if (!userId) return;
@@ -126,8 +128,10 @@ export default function ReportPage() {
         </h1>
       </div>
 
+      
+
       <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-xl p-2">
-        <div className="mb-4">
+        <div className="mb-4 flex flex-row items-center justify-between text-center">
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
@@ -142,6 +146,13 @@ export default function ReportPage() {
             <option value="action">🏃 การกระทำ</option>
             <option value="other">🔍 อื่น ๆ</option>
           </select>
+
+          <button
+            onClick={() => setSortAsc((prev) => !prev)}
+            className="text-xs ml-1 cursor-pointer flex flex-row items-center justify-center text-gray-500 hover:text-gray-800 bg-gray-50 rounded-xl px-2 py-2 font-normal hover:bg-gray-200 transition"
+          >
+            <span>เรียงตามวันที่ :</span> {sortAsc ? <CalendarArrowUp /> : <CalendarArrowDown />}
+          </button>
         </div>
 
         {isLoading ? (

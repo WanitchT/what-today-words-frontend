@@ -213,7 +213,7 @@ export default function WordStatsDashboard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="bg-white p-4 rounded-xl shadow text-xs"
+              className="bg-white p-2 rounded-xl shadow text-xs"
             >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data}>
@@ -247,7 +247,7 @@ export default function WordStatsDashboard() {
             <motion.div
               whileHover={{ scale: 1.02 }}
               transition={{ type: 'spring', stiffness: 300 }}
-              className="bg-white p-4 rounded-xl shadow"
+              className="bg-white p-2 rounded-xl shadow"
             >
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -258,6 +258,7 @@ export default function WordStatsDashboard() {
                     cx="50%"
                     cy="50%"
                     outerRadius={100}
+                    fontSize={13}
                     label={({ category, count }) => `${category} (${count})`}
                     onClick={(data) => {
                       setSelectedCategory(data.category);
