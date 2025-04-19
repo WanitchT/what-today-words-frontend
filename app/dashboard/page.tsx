@@ -213,7 +213,7 @@ export default function WordStatsDashboard() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.3 }}
-              className="bg-white p-2 rounded-xl shadow text-xs"
+              className="bg-white p-2 rounded-xl shadow text-[9px]"
             >
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={data}>
@@ -225,7 +225,7 @@ export default function WordStatsDashboard() {
                   dataKey="count"
                   fill="#34D399"
                   radius={[10, 10, 0, 0]}
-                  barSize={40}
+                  barSize={30}
                   isAnimationActive={true}
                   animationDuration={500}
                   activeBar={{ fill: "#10B981", stroke: "#047857", strokeWidth: 2 }}
