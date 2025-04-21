@@ -133,32 +133,35 @@ export default function WordStatsDashboard() {
         <StatCard
           icon={<MessageCircle />}
           label="คำศัพท์วันนี้"
-          value={stats.today.toString()}
+          value={stats.today}
           trend={
             stats.today > stats.yesterday ? "up" :
             stats.today < stats.yesterday ? "down" :
             null
           }
+          isLoading={isLoading}
         />
 
         <StatCard
           icon={<CalendarDays />}
           label="คำศัพท์อาทิตย์นี้"
-          value={stats.thisWeek.toString()}
+          value={stats.thisWeek}
           trend={
             stats.thisWeek > stats.lastWeek ? "up" :
             stats.thisWeek < stats.lastWeek ? "down" :
             null
           }
+          isLoading={isLoading}
         />
         <StatCard 
           icon={<CaseUpper />}
           label="คำศัพท์ทั้งหมด" 
-          value={stats.total.toString()} 
+          value={stats.total} 
+          isLoading={isLoading}
         />
         <StatCardForTopCategory 
           icon={<Tag />}
-          label="หมวดหมู่ที่ใช้บ่อยที่สุด" 
+          label="หมวดหมู่ที่พูดบ่อยที่สุด" 
           value={stats.topCategory} 
         />
       </div>
@@ -304,13 +307,15 @@ export default function WordStatsDashboard() {
 function StatCard({
   icon,
   label,
-  value,
+  value = 0,
   trend,
+  isLoading = false,
 }: {
   icon: string | JSX.Element;
   label: string;
-  value: string;
+  value: number;
   trend?: "up" | "down" | JSX.Element | null;
+  isLoading?: boolean;
 }) {
   const arrow =
     trend === "up" ? <TrendingUp className='text-green-600'/> : trend === "down" ? <TrendingDown className='text-amber-600'/> : "";
@@ -326,16 +331,16 @@ function StatCard({
         {/* {trend && <span className={`text-base ${trendColor}`}>{arrow}</span>} */}
       </div>
 
-      {value === '0' ? (
+      {isLoading ? (
         <div className="m-6 font-bold flex items-center gap-2 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
           <motion.div
-              className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
-              initial={{ rotate: 0 }}
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-            />
+            className="w-6 h-6 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"
+            initial={{ rotate: 0 }}
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          />
         </div>
-      ) : ( 
+      ) : (
         <div className="text-5xl font-bold flex items-center gap-1 bg-gradient-to-br from-[rgb(0,128,255)] to-[#04e89c] text-transparent bg-clip-text">
           {value}
         </div>
