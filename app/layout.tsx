@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import HamburgerMenu from "@/components/HamburgerMenu"; 
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: 'วันนี้ลูกพูดอะไร',
@@ -30,6 +31,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="font-anuphan bg-emerald-50 text-gray-800">
         <HamburgerMenu /> {/* ✅ Global menu */}
         <main className="pt-12 bg-emerald-50">{children}</main>
+        <Footer />
+
       </body>
     </html>
   );
