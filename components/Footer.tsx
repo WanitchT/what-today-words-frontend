@@ -22,7 +22,7 @@ export default function Footer() {
               className="text-emerald-500 flex flex-row items-center justify-center"
             >
                 {/* <Link className="mr-2 text-emerald-400" size={18} /> */}
-                <span>PhataByte.tech</span>
+                <span>todayword.PhataByte.tech</span>
             </a>
           </p>
         </div>
