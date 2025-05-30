@@ -254,6 +254,8 @@ export default function Home() {
               <option value="animal">🐶 สัตว์</option>
               <option value="food">🍎 อาหาร</option>
               <option value="vehicle">🚕 ยานพาหนะ</option>
+              <option value="color">🟥 สี</option>
+              <option value="personname">🙍🏼‍♂️ ชื่อคน</option>
               <option value="body">🤘 ร่างกาย</option>
               <option value="object">📦 สิ่งของ</option>
               <option value="emotion">😊 อารมณ์</option>

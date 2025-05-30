@@ -89,6 +89,8 @@ export default function ReportPage() {
       animal: { label: 'สัตว์', emoji: '🐶', color: 'bg-purple-50 text-purple-800' },
       food:   { label: 'อาหาร', emoji: '🍎', color: 'bg-red-50 text-red-800' },
       vehicle:   { label: 'ยานพาหนะ', emoji: '🚕', color: 'bg-orange-50 text-orange-800' },
+      color:   { label: 'สี', emoji: '🟥', color: 'bg-teal-50 text-teal-800' },
+      personname:   { label: 'ชื่อคน', emoji: '🙍🏼‍♂️', color: 'bg-gray-50 text-gray-800' },
       body:   { label: 'ร่างกาย', emoji: '🤘', color: 'bg-pink-50 text-pink-800' },
       object: { label: 'สิ่งของ', emoji: '📦', color: 'bg-yellow-50 text-yellow-800' },
       emotion:{ label: 'อารมณ์', emoji: '😊', color: 'bg-blue-50 text-blue-800' },
@@ -144,6 +146,8 @@ export default function ReportPage() {
             <option value="animal">🐶 สัตว์</option>
             <option value="food">🍎 อาหาร</option>
             <option value="vehicle">🚕 ยานพาหนะ</option>
+            <option value="color">🟥 สี</option>
+            <option value="personname">🙍🏼‍♂️ ชื่อคน</option>
             <option value="body">🤘 ร่างกาย</option>
             <option value="object">📦 สิ่งของ</option>
             <option value="emotion">😊 อารมณ์</option>
@@ -200,6 +204,8 @@ export default function ReportPage() {
                             <option value="animal">🐶 สัตว์</option>
                             <option value="food">🍎 อาหาร</option>
                             <option value="vehicle">🚕 ยานพาหนะ</option>
+                            <option value="color">🟥 สี</option>
+                            <option value="personname">🙍🏼‍♂️ ชื่อคน</option>
                             <option value="body">🤘 ร่างกาย</option>
                             <option value="object">📦 สิ่งของ</option>
                             <option value="emotion">😊 อารมณ์</option>
