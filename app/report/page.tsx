@@ -88,6 +88,8 @@ export default function ReportPage() {
       family: { label: 'ครอบครัว', emoji: '👨‍👩‍👧', color: 'bg-pink-50 text-pink-400' },
       animal: { label: 'สัตว์', emoji: '🐶', color: 'bg-purple-50 text-purple-800' },
       food:   { label: 'อาหาร', emoji: '🍎', color: 'bg-red-50 text-red-800' },
+      vehicle:   { label: 'ยานพาหนะ', emoji: '🚕', color: 'bg-orange-50 text-orange-800' },
+      body:   { label: 'ร่างกาย', emoji: '🤘', color: 'bg-pink-50 text-pink-800' },
       object: { label: 'สิ่งของ', emoji: '📦', color: 'bg-yellow-50 text-yellow-800' },
       emotion:{ label: 'อารมณ์', emoji: '😊', color: 'bg-blue-50 text-blue-800' },
       action: { label: 'การกระทำ', emoji: '🏃', color: 'bg-green-50 text-green-800' },
@@ -141,6 +143,8 @@ export default function ReportPage() {
             <option value="family">👨‍👩‍👧 ครอบครัว</option>
             <option value="animal">🐶 สัตว์</option>
             <option value="food">🍎 อาหาร</option>
+            <option value="vehicle">🚕 ยานพาหนะ</option>
+            <option value="body">🤘 ร่างกาย</option>
             <option value="object">📦 สิ่งของ</option>
             <option value="emotion">😊 อารมณ์</option>
             <option value="action">🏃 การกระทำ</option>
@@ -195,6 +199,8 @@ export default function ReportPage() {
                             <option value="family">👨‍👩‍👧 ครอบครัว</option>
                             <option value="animal">🐶 สัตว์</option>
                             <option value="food">🍎 อาหาร</option>
+                            <option value="vehicle">🚕 ยานพาหนะ</option>
+                            <option value="body">🤘 ร่างกาย</option>
                             <option value="object">📦 สิ่งของ</option>
                             <option value="emotion">😊 อารมณ์</option>
                             <option value="action">🏃 การกระทำ</option>

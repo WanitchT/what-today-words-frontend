@@ -253,6 +253,8 @@ export default function Home() {
               <option value="family">👨‍👩‍👧 ครอบครัว</option>
               <option value="animal">🐶 สัตว์</option>
               <option value="food">🍎 อาหาร</option>
+              <option value="vehicle">🚕 ยานพาหนะ</option>
+              <option value="body">🤘 ร่างกาย</option>
               <option value="object">📦 สิ่งของ</option>
               <option value="emotion">😊 อารมณ์</option>
               <option value="action">🏃 การกระทำ</option>
