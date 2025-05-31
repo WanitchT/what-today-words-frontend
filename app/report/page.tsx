@@ -87,7 +87,7 @@ export default function ReportPage() {
   };
 
   const handleCategoryUpdate = async (id: number) => {
-    await fetch(`${API_BASE}/api/words/${id}`, {
+    await fetch(`${API_BASE}/api/words/${id}?userId=${userId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ category: newCategory })
