@@ -28,7 +28,7 @@ export default function ReportPage() {
 
   const [sortAsc, setSortAsc] = useState<boolean>(false);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const pageSize = 20; // You can adjust this per page
+  const pageSize = 10; // You can adjust this per page
   const [totalWords, setTotalWords] = useState<number>(0);
 
   const filteredWords = words.filter((w) =>
