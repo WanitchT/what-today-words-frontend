@@ -49,6 +49,10 @@ export default function ReportPage() {
   }, []);
 
   useEffect(() => {
+    setCurrentPage(1);
+  }, [filter]);
+
+  useEffect(() => {
     if (!babyId || !userId) return;
     setIsLoading(true);
     // fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}`)
@@ -58,15 +62,19 @@ export default function ReportPage() {
     //     setWords(Array.isArray(data) ? data : []);
     //     setIsLoading(false);
     //   });
-    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}&limit=${pageSize}&offset=${(currentPage - 1) * pageSize}`)
-    .then((res) => res.json())
-    .then((result) => {
-      console.log("Fetched words:", result);
-      setWords(Array.isArray(result.words) ? result.words : []);
-      setTotalWords(result.total || 0);
-      setIsLoading(false);
-    });
-    }, [babyId, userId, sortAsc, currentPage]);
+    let url = `${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}&limit=${pageSize}&offset=${(currentPage - 1) * pageSize}`;
+    if (filter !== 'all') {
+      url += `&category=${filter}`;
+    }
+
+    fetch(url)
+      .then((res) => res.json())
+      .then((result) => {
+        setWords(Array.isArray(result.words) ? result.words : []);
+        setTotalWords(result.total || 0);
+        setIsLoading(false);
+      });
+    }, [babyId, userId, sortAsc, currentPage, filter]);
 
   const handleDelete = async (id: number) => {
     if (!userId) return;
