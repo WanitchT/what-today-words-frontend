@@ -27,6 +27,9 @@ export default function ReportPage() {
   const [newCategory, setNewCategory] = useState<string>('');
 
   const [sortAsc, setSortAsc] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const pageSize = 20; // You can adjust this per page
+  const [totalWords, setTotalWords] = useState<number>(0);
 
   const filteredWords = words.filter((w) =>
     filter === 'all' ? true : w.category === filter
@@ -48,14 +51,22 @@ export default function ReportPage() {
   useEffect(() => {
     if (!babyId || !userId) return;
     setIsLoading(true);
-    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched words:", data); // 👈 ADD THIS
-        setWords(Array.isArray(data) ? data : []);
-        setIsLoading(false);
-      });
-  }, [babyId, userId, sortAsc]);
+    // fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}`)
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     console.log("Fetched words:", data); // 👈 ADD THIS
+    //     setWords(Array.isArray(data) ? data : []);
+    //     setIsLoading(false);
+    //   });
+    fetch(`${API_BASE}/api/words/${babyId}?userId=${userId}&sortAsc=${sortAsc}&limit=${pageSize}&offset=${(currentPage - 1) * pageSize}`)
+    .then((res) => res.json())
+    .then((result) => {
+      console.log("Fetched words:", result);
+      setWords(Array.isArray(result.words) ? result.words : []);
+      setTotalWords(result.total || 0);
+      setIsLoading(false);
+    });
+    }, [babyId, userId, sortAsc, currentPage]);
 
   const handleDelete = async (id: number) => {
     if (!userId) return;
@@ -245,6 +256,29 @@ export default function ReportPage() {
                 </motion.li>
               ))}
             </div>
+            {totalWords > pageSize && (
+              <div className="flex justify-center gap-4 mt-6 text-sm text-gray-600">
+                <button
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                  className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                >
+                  ◀️ ก่อนหน้า
+                </button>
+
+                <span className="self-center">
+                  หน้า {currentPage} จาก {Math.ceil(totalWords / pageSize)}
+                </span>
+
+                <button
+                  disabled={currentPage >= Math.ceil(totalWords / pageSize)}
+                  onClick={() => setCurrentPage((prev) => prev + 1)}
+                  className="px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                >
+                  ถัดไป ▶️
+                </button>
+              </div>
+            )}
           </AnimatePresence>
         )}
       </div>
